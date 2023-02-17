@@ -6,6 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/PixelArtDrawing/PixelArtTestScene.unity
+    path: Assets/Testing/Prototype1/PixelArtDrawing/PixelArtTestScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: d21b874bf0929a046bc6134ce5b0fbb2, type: 2}
