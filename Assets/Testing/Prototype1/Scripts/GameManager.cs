@@ -1,24 +1,40 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    public static GameManager instance;
-
     private StateMachine<GameManager> stateMachine;
 
     public Controls controls;
-    
-    public void Awake()
+
+    public SpriteRenderer spriteRenderer;
+
+    public void SetPlayerSprite(Sprite playerSprite)
     {
-        if (instance == null)
+        spriteRenderer.sprite = playerSprite;
+    }
+
+    public void OnArtistTurnEnd()
+    {
+        Color[,] pixelGrid = PixelBrushController.pixelGrid;
+        int canvasSize = pixelGrid.GetLength(0);
+
+        Texture2D texture = new(canvasSize, canvasSize, TextureFormat.RGBA64, false);
+
+        for (int x = 0; x < canvasSize; x++)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            for (int y = 0; y < canvasSize; y++)
+            {
+                texture.SetPixel(x, y, pixelGrid[x, y]);
+            }
         }
-        else
-        {
-            Destroy(instance);
-        }
+
+        texture.Apply();
+
+        Rect rect = new(0, 0, canvasSize, canvasSize);
+        Sprite sprite = Sprite.Create(texture, rect, Vector2.zero, canvasSize);
+
+        SetPlayerSprite(sprite);
     }
 
     private void OnEnable()
@@ -35,9 +51,14 @@ public class GameManager : MonoBehaviour
     public void Start()
     {
         stateMachine = new StateMachine<GameManager>(
-            this
-            //new State<GameManager>(
+            this,
+            new ArtistState(),
+            new DeveloperState(),
+            new DesignerState(),
+            new PlayTestState()
         );
+
+        stateMachine.ChangeState(typeof(ArtistState));
     }
 }
 

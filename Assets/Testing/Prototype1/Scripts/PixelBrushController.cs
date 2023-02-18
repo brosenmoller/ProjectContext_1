@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PixelBrushController : MonoBehaviour 
 {
     public static Dictionary<Vector3, SpriteRenderer> occupiedLocations = new();
+    public static Color[,] pixelGrid;
 
     [Header("General Settings")]
     [SerializeField] private float gridCellSize;
@@ -37,6 +38,16 @@ public class PixelBrushController : MonoBehaviour
     {
         brushSpriteRender = GetComponent<SpriteRenderer>();
 
+        pixelGrid = new Color[(int)canvasSize, (int)canvasSize];
+
+        for (int x = 0; x < pixelGrid.GetLength(0); x++)
+        {
+            for (int y = 0; y < pixelGrid.GetLength(1); y++)
+            {
+                pixelGrid[x, y] = Color.clear;
+            }
+        }
+
         for (int i = 0; i < selectableColors.Length; i++)
         {
             GameObject colorPalleteButton = Instantiate(colorPalleteColorImage, palleteLayoutGroup);
@@ -63,6 +74,8 @@ public class PixelBrushController : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+
+        occupiedLocations.Clear();
     }
 
     private void SetBrushColor(Color color)
@@ -74,13 +87,13 @@ public class PixelBrushController : MonoBehaviour
 
     private void Start()
     {
-        GameManager.instance.controls.Default.Paint.started += _ => currentBrushMode = BrushMode.Painting;
-        GameManager.instance.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
+        GameManager.Instance.controls.Default.Paint.started += _ => currentBrushMode = BrushMode.Painting;
+        GameManager.Instance.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
 
-        GameManager.instance.controls.Default.Erase.started += _ => currentBrushMode = BrushMode.Erasing;
-        GameManager.instance.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
+        GameManager.Instance.controls.Default.Erase.started += _ => currentBrushMode = BrushMode.Erasing;
+        GameManager.Instance.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
 
-        GameManager.instance.controls.Default.CursorMovement.performed += 
+        GameManager.Instance.controls.Default.CursorMovement.performed += 
             ctx => CursorMovement(ctx.ReadValue<Vector2>());
     }
 
@@ -127,6 +140,13 @@ public class PixelBrushController : MonoBehaviour
         GameObject newPixel = Instantiate(placeableObject, placementPosition, Quaternion.identity);
         newPixel.transform.parent = pixelParent;
 
+        Debug.Log(new Vector2Int((int)(placementPosition.x - canvas.position.x + gridOffset), (int)(placementPosition.y - canvas.position.y + gridOffset)));
+
+        pixelGrid[
+            (int)(placementPosition.x - canvas.position.x + gridOffset), 
+            (int)(placementPosition.y - canvas.position.y + gridOffset)
+        ] = selectedColor;
+
         SpriteRenderer pixelSpriteRenderer = newPixel.GetComponent<SpriteRenderer>();
         pixelSpriteRenderer.color = selectedColor;
         occupiedLocations.Add(placementPosition, pixelSpriteRenderer);
@@ -138,6 +158,11 @@ public class PixelBrushController : MonoBehaviour
         Vector3 removePosition = transform.position;
         if (occupiedLocations.ContainsKey(removePosition))
         {
+            pixelGrid[
+                (int)(removePosition.x - canvas.position.x + gridOffset),
+                (int)(removePosition.y - canvas.position.y + gridOffset)
+            ] = Color.clear;
+
             GameObject pixelToBeRemoved = occupiedLocations[removePosition].gameObject;
             occupiedLocations.Remove(removePosition);
             Destroy(pixelToBeRemoved);
