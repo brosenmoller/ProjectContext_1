@@ -1,17 +1,30 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : Singleton<GameManager>
+public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
     private StateMachine<GameManager> stateMachine;
 
     public Controls controls;
+    [SerializeField] private GameObject[] artistObjects;
 
-    public SpriteRenderer spriteRenderer;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
 
     public void SetPlayerSprite(Sprite playerSprite)
     {
-        spriteRenderer.sprite = playerSprite;
+        foreach (GameObject artistObject in artistObjects)
+        { 
+            artistObject.SetActive(false);
+        }
+        PlatformerMovement playerMovement = FindAnyObjectByType<PlatformerMovement>();
+        playerMovement.characterHolder.GetComponent<SpriteRenderer>().sprite = playerSprite;
     }
 
     public void OnArtistTurnEnd()
@@ -30,9 +43,10 @@ public class GameManager : Singleton<GameManager>
         }
 
         texture.Apply();
+        texture.filterMode = FilterMode.Point;
 
         Rect rect = new(0, 0, canvasSize, canvasSize);
-        Sprite sprite = Sprite.Create(texture, rect, Vector2.zero, canvasSize);
+        Sprite sprite = Sprite.Create(texture, rect, new Vector2(0, 0), canvasSize);
 
         SetPlayerSprite(sprite);
     }
@@ -57,8 +71,6 @@ public class GameManager : Singleton<GameManager>
             new DesignerState(),
             new PlayTestState()
         );
-
-        stateMachine.ChangeState(typeof(ArtistState));
     }
 }
 

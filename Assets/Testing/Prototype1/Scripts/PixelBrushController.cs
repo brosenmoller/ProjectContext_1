@@ -140,11 +140,9 @@ public class PixelBrushController : MonoBehaviour
         GameObject newPixel = Instantiate(placeableObject, placementPosition, Quaternion.identity);
         newPixel.transform.parent = pixelParent;
 
-        Debug.Log(new Vector2Int((int)(placementPosition.x - canvas.position.x + gridOffset), (int)(placementPosition.y - canvas.position.y + gridOffset)));
-
         pixelGrid[
-            (int)(placementPosition.x - canvas.position.x + gridOffset), 
-            (int)(placementPosition.y - canvas.position.y + gridOffset)
+            (int)(placementPosition.x - canvas.position.x + gridOffset + canvasSize / 2), 
+            (int)(placementPosition.y - canvas.position.y + gridOffset + canvasSize / 2)
         ] = selectedColor;
 
         SpriteRenderer pixelSpriteRenderer = newPixel.GetComponent<SpriteRenderer>();
@@ -159,8 +157,8 @@ public class PixelBrushController : MonoBehaviour
         if (occupiedLocations.ContainsKey(removePosition))
         {
             pixelGrid[
-                (int)(removePosition.x - canvas.position.x + gridOffset),
-                (int)(removePosition.y - canvas.position.y + gridOffset)
+                (int)(removePosition.x - canvas.position.x + gridOffset + canvasSize / 2),
+                (int)(removePosition.y - canvas.position.y + gridOffset + canvasSize / 2)
             ] = Color.clear;
 
             GameObject pixelToBeRemoved = occupiedLocations[removePosition].gameObject;

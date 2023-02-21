@@ -5,8 +5,14 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Testing/Prototype1/PixelArtDrawing/PixelArtTestScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    path: Assets/Testing/Prototype1/ArtistScene.unity
+    guid: 2d8d3a70c0b74b94480217eeee2c8074
+  - enabled: 1
+    path: Assets/Testing/Prototype1/PlayTestScene.unity
+    guid: 8260b0b757572d74ca2fb975b280c0aa
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: d21b874bf0929a046bc6134ce5b0fbb2, type: 2}

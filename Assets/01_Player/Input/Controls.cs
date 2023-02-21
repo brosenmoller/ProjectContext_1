@@ -28,13 +28,22 @@ public partial class @Controls : IInputActionCollection2, IDisposable
             ""id"": ""1928b729-1389-4526-9930-a63747d7baa8"",
             ""actions"": [
                 {
-                    ""name"": ""Movement"",
+                    ""name"": ""HorizontalMovement"",
                     ""type"": ""Value"",
                     ""id"": ""30ddd13e-a6a9-40bf-ac03-2165f8355202"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""7a80f6a2-89e6-44a8-af12-85e5bb0002d3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Paint"",
@@ -72,7 +81,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement"",
+                    ""action"": ""HorizontalMovement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -83,7 +92,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard_Mouse"",
-                    ""action"": ""Movement"",
+                    ""action"": ""HorizontalMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -94,7 +103,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard_Mouse"",
-                    ""action"": ""Movement"",
+                    ""action"": ""HorizontalMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -105,7 +114,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement"",
+                    ""action"": ""HorizontalMovement"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -116,7 +125,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Movement"",
+                    ""action"": ""HorizontalMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -127,7 +136,7 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Movement"",
+                    ""action"": ""HorizontalMovement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -161,6 +170,28 @@ public partial class @Controls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""CursorMovement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e7b12b76-2339-45f3-9971-972be3cd3d54"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f768f8ff-8040-4e68-8d3e-82bcbdef1cf7"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard_Mouse"",
+                    ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -199,7 +230,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
 }");
         // Default
         m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
-        m_Default_Movement = m_Default.FindAction("Movement", throwIfNotFound: true);
+        m_Default_HorizontalMovement = m_Default.FindAction("HorizontalMovement", throwIfNotFound: true);
+        m_Default_Jump = m_Default.FindAction("Jump", throwIfNotFound: true);
         m_Default_Paint = m_Default.FindAction("Paint", throwIfNotFound: true);
         m_Default_Erase = m_Default.FindAction("Erase", throwIfNotFound: true);
         m_Default_CursorMovement = m_Default.FindAction("CursorMovement", throwIfNotFound: true);
@@ -262,7 +294,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     // Default
     private readonly InputActionMap m_Default;
     private IDefaultActions m_DefaultActionsCallbackInterface;
-    private readonly InputAction m_Default_Movement;
+    private readonly InputAction m_Default_HorizontalMovement;
+    private readonly InputAction m_Default_Jump;
     private readonly InputAction m_Default_Paint;
     private readonly InputAction m_Default_Erase;
     private readonly InputAction m_Default_CursorMovement;
@@ -270,7 +303,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     {
         private @Controls m_Wrapper;
         public DefaultActions(@Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Movement => m_Wrapper.m_Default_Movement;
+        public InputAction @HorizontalMovement => m_Wrapper.m_Default_HorizontalMovement;
+        public InputAction @Jump => m_Wrapper.m_Default_Jump;
         public InputAction @Paint => m_Wrapper.m_Default_Paint;
         public InputAction @Erase => m_Wrapper.m_Default_Erase;
         public InputAction @CursorMovement => m_Wrapper.m_Default_CursorMovement;
@@ -283,9 +317,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_DefaultActionsCallbackInterface != null)
             {
-                @Movement.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMovement;
-                @Movement.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMovement;
-                @Movement.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMovement;
+                @HorizontalMovement.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnHorizontalMovement;
+                @HorizontalMovement.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnHorizontalMovement;
+                @HorizontalMovement.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnHorizontalMovement;
+                @Jump.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
                 @Paint.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPaint;
                 @Paint.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPaint;
                 @Paint.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnPaint;
@@ -299,9 +336,12 @@ public partial class @Controls : IInputActionCollection2, IDisposable
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @Movement.started += instance.OnMovement;
-                @Movement.performed += instance.OnMovement;
-                @Movement.canceled += instance.OnMovement;
+                @HorizontalMovement.started += instance.OnHorizontalMovement;
+                @HorizontalMovement.performed += instance.OnHorizontalMovement;
+                @HorizontalMovement.canceled += instance.OnHorizontalMovement;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
                 @Paint.started += instance.OnPaint;
                 @Paint.performed += instance.OnPaint;
                 @Paint.canceled += instance.OnPaint;
@@ -335,7 +375,8 @@ public partial class @Controls : IInputActionCollection2, IDisposable
     }
     public interface IDefaultActions
     {
-        void OnMovement(InputAction.CallbackContext context);
+        void OnHorizontalMovement(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
         void OnPaint(InputAction.CallbackContext context);
         void OnErase(InputAction.CallbackContext context);
         void OnCursorMovement(InputAction.CallbackContext context);

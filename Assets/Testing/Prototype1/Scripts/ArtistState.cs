@@ -5,7 +5,7 @@ public class ArtistState : State<GameManager>
 {
     public override void OnEnter()
     {
-        new Timer(20, OnArtistTurnEnd);
+        
     }
 
     private void OnArtistTurnEnd()

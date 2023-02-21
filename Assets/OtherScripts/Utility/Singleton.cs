@@ -11,7 +11,10 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
             if (instance == null)
             {
                 instance = FindObjectOfType<T>();
-                DontDestroyOnLoad(instance.gameObject);
+                if (instance != null)
+                {
+                    DontDestroyOnLoad(instance.gameObject);
+                }
             }
 
             return instance;
