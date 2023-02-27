@@ -50,10 +50,10 @@ public class PlatformerMovement : MonoBehaviour
         currentJumpVelocity = maxJumpVelocity;
 
         //Set Up Controls
-        GameManager.Instance.controls.Default.HorizontalMovement.performed += movemt_ctx => SetMovement((int)movemt_ctx.ReadValue<float>());
-        GameManager.Instance.controls.Default.HorizontalMovement.canceled += _ => SetMovement(0);
-        GameManager.Instance.controls.Default.Jump.started += _ => InitiateJump();
-        GameManager.Instance.controls.Default.Jump.canceled += _ => CutJump();
+        GameManager.InputManager.controls.Default.HorizontalMovement.performed += movemt_ctx => SetMovement((int)movemt_ctx.ReadValue<float>());
+        GameManager.InputManager.controls.Default.HorizontalMovement.canceled += _ => SetMovement(0);
+        GameManager.InputManager.controls.Default.Jump.started += _ => InitiateJump();
+        GameManager.InputManager.controls.Default.Jump.canceled += _ => CutJump();
     }
 
     private void Update()

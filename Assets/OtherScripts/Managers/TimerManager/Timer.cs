@@ -13,6 +13,7 @@ public class Timer
     private float currentTime = 0f;
     private float endTime;
     public event Action OnTimerEnd;
+    private bool loop;
 
     private TimerState _state = TimerState.Paused;
 
@@ -21,14 +22,14 @@ public class Timer
         set {
             if (_state != TimerState.Running && value == TimerState.Running)
             {
-                TimerManager.Instance.OnTimerUpdate += UpdateTimer;
+                GameManager.TimerManager.OnTimerUpdate += UpdateTimer;
             }
             else if (_state == TimerState.Running && value != TimerState.Running)
             {
-                TimerManager.Instance.OnTimerUpdate -= UpdateTimer;
+                GameManager.TimerManager.OnTimerUpdate -= UpdateTimer;
             }
 
-            _state = value;
+            _state = value; 
         }
     }
     public float EndTime
@@ -45,14 +46,21 @@ public class Timer
     public bool IsRunning { get { return State == TimerState.Running; } }
     public bool IsFinished { get { return State == TimerState.Finished; } }
 
-    public Timer(float endTime, Action callback = null, bool autoStart = true) 
+    public Timer(float endTime, Action callback = null, bool autoStart = true, bool loop = false) 
     {
+        this.loop = loop;
         this.endTime = endTime;
 
         if (autoStart) { State = TimerState.Running; }
         else { State = TimerState.Paused; }
 
         if (callback != null) { OnTimerEnd += callback; }
+    }
+
+    public void SetIsLooping(bool loop)
+    {
+        this.loop = loop;
+        if (loop && IsFinished) { Reset(); }
     }
 
     public void Start()
@@ -62,24 +70,21 @@ public class Timer
 
     public void UpdateTimer(float delta) 
     {
-        if (State != TimerState.Running) { return; }
-
         currentTime += delta;
         if (currentTime >= endTime)
         {
-            State = TimerState.Finished;
-
             try { OnTimerEnd?.Invoke(); }
             catch (MissingReferenceException) { }
+
+            if (loop) { Reset(); }
+            else { State = TimerState.Finished; }
         }
     }
 
-    public void Reset(bool autoStart = true)
+    public void Reset()
     {
         currentTime = 0f;
-        if (autoStart) { State = TimerState.Running; }
-        else { State = TimerState.Paused; }
-       
+        State = TimerState.Running;
     }
 
     public void Pause() 

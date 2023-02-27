@@ -87,13 +87,13 @@ public class PixelBrushController : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.controls.Default.Paint.started += _ => currentBrushMode = BrushMode.Painting;
-        GameManager.Instance.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
+        GameManager.InputManager.controls.Default.Paint.started += _ => currentBrushMode = BrushMode.Painting;
+        GameManager.InputManager.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
 
-        GameManager.Instance.controls.Default.Erase.started += _ => currentBrushMode = BrushMode.Erasing;
-        GameManager.Instance.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
+        GameManager.InputManager.controls.Default.Erase.started += _ => currentBrushMode = BrushMode.Erasing;
+        GameManager.InputManager.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
 
-        GameManager.Instance.controls.Default.CursorMovement.performed += 
+        GameManager.InputManager.controls.Default.CursorMovement.performed += 
             ctx => CursorMovement(ctx.ReadValue<Vector2>());
     }
 

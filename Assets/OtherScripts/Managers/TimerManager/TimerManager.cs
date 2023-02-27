@@ -1,11 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
-public class TimerManager : Singleton<TimerManager>
+public class TimerManager : Manager
 {
     public event Action<float> OnTimerUpdate;
-
-    public void FixedUpdate()
+    public override void OnFixedUpdate()
     {
         OnTimerUpdate?.Invoke(Time.fixedDeltaTime);
     }
