@@ -93,10 +93,12 @@ public class SaveManager : Manager
         Vector3SerializationSurrogate vector3Surrogate = new();
         QuaterionSerializationSurrogate quaterionSurrogate = new();
         TypeSerializationSurrogate typeSurrogate = new();
+        SpriteSerializationSurrogate spriteSurrogate = new();
 
         selector.AddSurrogate(typeof(Vector3), new StreamingContext(StreamingContextStates.All), vector3Surrogate);
         selector.AddSurrogate(typeof(Quaternion), new StreamingContext(StreamingContextStates.All), quaterionSurrogate);
         selector.AddSurrogate(typeof(Type), new StreamingContext(StreamingContextStates.All), typeSurrogate);
+        selector.AddSurrogate(typeof(Sprite), new StreamingContext(StreamingContextStates.All), spriteSurrogate);
 
         formatter.SurrogateSelector = selector;
 

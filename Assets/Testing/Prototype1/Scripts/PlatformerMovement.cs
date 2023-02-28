@@ -4,14 +4,14 @@ using System.Collections;
 public class PlatformerMovement : MonoBehaviour
 {
     [Header("Horizontal Movement Settings")]
-    [SerializeField] [Range(0, 1)] float basicHorizontalDamping = 0.3f;
-    [SerializeField] [Range(0, 1)] float horizontalDampingWhenStopping = 0.5f;
-    [SerializeField] [Range(0, 1)] float horizontalDampingWhenTurning = 0.4f;
+    [SerializeField, Range(0, 1)] float basicHorizontalDamping = 0.3f;
+    [SerializeField, Range(0, 1)] float horizontalDampingWhenStopping = 0.5f;
+    [SerializeField, Range(0, 1)] float horizontalDampingWhenTurning = 0.4f;
 
     [Header("Vertical Movement Settings")]
     [SerializeField] private float maxJumpVelocity = 18f;
-    [SerializeField] [Range(0, 1)] float jumpCutOff = 0.5f;
-    [SerializeField] public float rigidBodyGravityScale = 4f;
+    [SerializeField, Range(0, 1)] float jumpCutOff = 0.5f;
+    [SerializeField] private float rigidBodyGravityScale = 4f;
 
     [Header("GroundDetection")]
     [SerializeField] private float jumpDelay = 0.15f;
