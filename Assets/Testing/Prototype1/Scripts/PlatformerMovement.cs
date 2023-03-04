@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class PlatformerMovement : MonoBehaviour
 {
@@ -50,10 +51,18 @@ public class PlatformerMovement : MonoBehaviour
         currentJumpVelocity = maxJumpVelocity;
 
         //Set Up Controls
-        GameManager.InputManager.controls.Default.HorizontalMovement.performed += movemt_ctx => SetMovement((int)movemt_ctx.ReadValue<float>());
-        GameManager.InputManager.controls.Default.HorizontalMovement.canceled += _ => SetMovement(0);
-        GameManager.InputManager.controls.Default.Jump.started += _ => InitiateJump();
-        GameManager.InputManager.controls.Default.Jump.canceled += _ => CutJump();
+        GameManager.InputManager.controls.Default.HorizontalMovement.performed += SetMovement;
+        GameManager.InputManager.controls.Default.HorizontalMovement.canceled += SetMovement;
+        GameManager.InputManager.controls.Default.Jump.started += InitiateJump;
+        GameManager.InputManager.controls.Default.Jump.canceled += CutJump;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.InputManager.controls.Default.HorizontalMovement.performed -= SetMovement;
+        GameManager.InputManager.controls.Default.HorizontalMovement.canceled -= SetMovement;
+        GameManager.InputManager.controls.Default.Jump.started -= InitiateJump;
+        GameManager.InputManager.controls.Default.Jump.canceled -= CutJump;
     }
 
     private void Update()
@@ -80,12 +89,12 @@ public class PlatformerMovement : MonoBehaviour
         }
     }
 
-    private void InitiateJump()
+    private void InitiateJump(InputAction.CallbackContext callbackContext)
     {
         jumpTimer = Time.time + jumpDelay;
     }
 
-    private void CutJump()
+    private void CutJump(InputAction.CallbackContext callbackContext)
     {
         if (jumpTimer > 0)
         {
@@ -97,9 +106,9 @@ public class PlatformerMovement : MonoBehaviour
         }
     }
 
-    public void SetMovement(int newMovement)
+    public void SetMovement(InputAction.CallbackContext callbackContext)
     {
-        movement = newMovement;
+        movement = (int)callbackContext.ReadValue<float>();
         Flip(movement);
     }
 
