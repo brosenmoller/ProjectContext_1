@@ -5,14 +5,11 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Testing/Prototype1/ArtistScene.unity
-    guid: 2d8d3a70c0b74b94480217eeee2c8074
+    path: Assets/GameFlow/00_StartMenu/StartMenuScene.unity
+    guid: 1e64abc76f7dc9a4892e66ffe5a7be86
   - enabled: 1
-    path: Assets/Testing/Prototype1/PlayTestScene.unity
-    guid: 8260b0b757572d74ca2fb975b280c0aa
+    path: Assets/GameFlow/01_ThemeSelection/ChoseThemeScene.unity
+    guid: 402482a0966be6f42a8f0404e800ba86
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: d21b874bf0929a046bc6134ce5b0fbb2, type: 2}
