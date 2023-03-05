@@ -3,21 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum ProgrammableEventType
-{
-    ON_PLAYER_COLLIDE = 0,
-    ON_PLAYER_JUMP = 1,
-    ON_PLAYER_WALK = 2,
-
-}
-
-public enum ProgrammableActionType
-{
-    SCENE_RELOAD = 0,
-    SET_PLAYER_JUMP_FORCE = 1,
-    SET_PLAYER_MOVE_RIGHT_FORCE = 1,
-}
-
 public class ProgrammableObject : MonoBehaviour
 {
     private void Start()
