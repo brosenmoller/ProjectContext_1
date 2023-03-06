@@ -4,17 +4,31 @@ using UnityEngine.UI;
 
 public enum ProgrammableEventType
 {
-    ON_PLAYER_COLLIDE = 0,
-    ON_PLAYER_JUMP = 1,
-    ON_PLAYER_WALK = 2,
-
+    ON_START = 0,
+    ON_PLAYER_COLLIDE = 1,
+    ON_PLAYER_JUMP = 2,
+    ON_PLAYER_WALK = 3,
+    ON_PlAYER_STOP = 4,
+    ON_PLAYER_IN_RANGE = 5,
+    ON_COLLIDE = 6,
+    EVERY_HALF_SECOND = 7,
+    EVERY_3_SECONDS = 8,
+    EVERY_10_SECONDS = 9,
 }
 
 public enum ProgrammableActionType
 {
-    SCENE_RELOAD = 0,
-    SET_PLAYER_JUMP_FORCE = 1,
-    SET_PLAYER_MOVE_RIGHT_FORCE = 1,
+    RELOAD_SCENE = 0,
+    PLAYER_BIG_JUMP = 1,
+    PLAYER_PLUS_ONE_HP = 2,
+    PLAYER_MINUS_ONE_HP = 3,
+    OBJECT_MOVE_FORWARD = 4,
+    OBJECT_JUMP = 5,
+    OBJECT_TURN_AROUND = 6,
+    OBJECT_STOP_MOVING = 7,
+    OBJECT_PAUSE_MOVING_3_SECONDS = 8,
+    OBJECT_MOVE_DOWN = 9,
+    OBJECT_MOVE_UP = 10,
 }
 
 public class DeveloperController : MonoBehaviour
@@ -40,13 +54,64 @@ public class DeveloperController : MonoBehaviour
     [SerializeField] private SerializableDictionary<Button, ProgrammableEventType> eventConnectors = new();
     [SerializeField] private SerializableDictionary<Button, ProgrammableActionType> actionConnectors = new();
 
+    private Dictionary<ProgrammableEventType, ProgrammableActionType[]> localEnemyEventsActions;
+    private Dictionary<ProgrammableEventType, ProgrammableActionType[]> localObject1EventsActions;
+    private Dictionary<ProgrammableEventType, ProgrammableActionType[]> localObject2EventsActions;
+
     private Button currentEventConnector;
     private Button currentActionConnector;
 
     private void Awake()
     {
-
+        localEnemyEventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
+        localObject1EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
+        localObject2EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
     }
 
+    public void SetCurrentEventConnector(Button button) 
+    {
+        if (currentEventConnector != button)
+        {
+            currentEventConnector = button;
+        }
+        else
+        {
+            currentEventConnector = null;
+        }
+
+        if (currentEventConnector != null && currentEventConnector != null)
+        {
+            ConnectEventToAction();
+        }
+    }
+    public void SetCurrentActionConnector(Button button) 
+    {
+        if (currentActionConnector != button)
+        {
+            currentActionConnector = button;
+        }
+        else
+        {
+            currentActionConnector = null;
+        }
+
+        if (currentEventConnector != null && currentEventConnector != null)
+        {
+            ConnectEventToAction();
+        }
+    }
+
+    private void ConnectEventToAction()
+    {
+        //Instantiate();
+    }
+
+    public void DeveloperTurnEnd()
+    {
+        GameManager.Instance.SetProgrammableEnemyEventsActions(localEnemyEventsActions);
+        GameManager.Instance.SetProgrammableObject1EventsActions(localObject1EventsActions);
+        GameManager.Instance.SetProgrammableObject2EventsActions(localObject2EventsActions);
+        GameManager.Instance.NextTurn();
+    }
 }
 

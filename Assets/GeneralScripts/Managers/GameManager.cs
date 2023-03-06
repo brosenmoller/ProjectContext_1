@@ -2,7 +2,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections.Generic;
 
-[DisallowMultipleComponent]
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
@@ -135,27 +134,27 @@ public class GameManager : MonoBehaviour
     public void SetNamePlayer3(string name) => GameData.namePlayer3 = name;
 
     public void SetPlayerSprite(Sprite sprite) => GameData.playerSprite = sprite;
-    public void SetEnemySprite(Sprite sprite) => GameData.enemySprite = sprite;
+    public void SetEnemySprite(Sprite sprite) => GameData.programmableEnemySprite = sprite;
     public void SetProgrammableObject1Sprite(Sprite sprite) => GameData.programmableObject1Sprite = sprite;
     public void SetProgrammableObject2Sprite(Sprite sprite) => GameData.programmableObject2Sprite = sprite;
 
-    public void SetProgrammableObject1EventActionDictionary
+    public void SetProgrammableObject1EventsActions
     (
         Dictionary<ProgrammableEventType, ProgrammableActionType[]> dictionary
     )
-    => GameData.programmableObject1EventActionDictionary = dictionary;
+    => GameData.programmableObject1EventsActions = dictionary;
 
-    public void SetProgrammableObject2EventActionDictionary
+    public void SetProgrammableObject2EventsActions
     (
         Dictionary<ProgrammableEventType, ProgrammableActionType[]> dictionary
     )
-    => GameData.programmableObject2EventActionDictionary = dictionary;
+    => GameData.programmableObject2EventsActions = dictionary;
     
-    public void SetEnemyEventActionDictionary
+    public void SetProgrammableEnemyEventsActions
     (
         Dictionary<ProgrammableEventType, ProgrammableActionType[]> dictionary
     )
-    => GameData.enemyEventActionDictionary = dictionary;
+    => GameData.programmableEnemyEventsActions = dictionary;
 
 
     #endregion

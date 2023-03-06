@@ -10,13 +10,13 @@ public class GameData
     public string namePlayer3;
 
     public Sprite playerSprite;
-    public Sprite enemySprite;
+    public Sprite programmableEnemySprite;
     public Sprite programmableObject1Sprite; 
     public Sprite programmableObject2Sprite;
 
-    public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableObject1EventActionDictionary;
-    public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableObject2EventActionDictionary;
-    public Dictionary<ProgrammableEventType, ProgrammableActionType[]> enemyEventActionDictionary;
+    public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableEnemyEventsActions;
+    public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableObject1EventsActions;
+    public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableObject2EventsActions;
 }
 
 public enum GameTheme
