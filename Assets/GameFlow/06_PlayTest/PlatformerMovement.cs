@@ -81,11 +81,6 @@ public class PlatformerMovement : MonoBehaviour
         if (!wasGrounded && isGrounded)
         {
             StartCoroutine(JumpSqueeze(xSqueeze, ySqueeze, squeezeDuration));
-
-            if (groundTimer < Time.time - groundDelay)
-            {
-                //Posible Land animation
-            }
         }
     }
 

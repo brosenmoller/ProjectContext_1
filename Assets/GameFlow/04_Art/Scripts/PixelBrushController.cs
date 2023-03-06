@@ -62,7 +62,6 @@ public class PixelBrushController : MonoBehaviour
             });
         }
 
-        selectedColor = selectableColors[0];
         SetBrushColor(selectableColors[0]);
         
         canvas.localScale = new Vector3(canvasSize / 2 - 0.5f, canvasSize / 2 - 0.5f, 1);
@@ -128,7 +127,6 @@ public class PixelBrushController : MonoBehaviour
     private void PaintPixel()
     {
         Vector3 placementPosition = transform.position;
-
         if (!IsPositionInCanvas(placementPosition)) { return; }
         
 
@@ -149,23 +147,21 @@ public class PixelBrushController : MonoBehaviour
         SpriteRenderer pixelSpriteRenderer = newPixel.GetComponent<SpriteRenderer>();
         pixelSpriteRenderer.color = selectedColor;
         occupiedLocations.Add(placementPosition, pixelSpriteRenderer);
-
     }
 
     private void ErasePixel()
     {
         Vector3 removePosition = transform.position;
-        if (occupiedLocations.ContainsKey(removePosition))
-        {
-            pixelGrid[
-                (int)(removePosition.x - canvas.position.x + gridOffset + canvasSize / 2),
-                (int)(removePosition.y - canvas.position.y + gridOffset + canvasSize / 2)
-            ] = Color.clear;
+        if (!occupiedLocations.ContainsKey(removePosition)) { return; }
+        
+        pixelGrid[
+            (int)(removePosition.x - canvas.position.x + gridOffset + canvasSize / 2),
+            (int)(removePosition.y - canvas.position.y + gridOffset + canvasSize / 2)
+        ] = Color.clear;
 
-            GameObject pixelToBeRemoved = occupiedLocations[removePosition].gameObject;
-            occupiedLocations.Remove(removePosition);
-            Destroy(pixelToBeRemoved);
-        }
+        GameObject pixelToBeRemoved = occupiedLocations[removePosition].gameObject;
+        occupiedLocations.Remove(removePosition);
+        Destroy(pixelToBeRemoved);
     }
 
     private Vector3 SnapPositionToGrid(Vector3 vector)

@@ -68,7 +68,7 @@ public class DeveloperController : MonoBehaviour
         localObject2EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
     }
 
-    public void SetCurrentEventConnector(Button button) 
+    public void SetCurrentEventConnector(Button button)
     {
         if (currentEventConnector != button)
         {
@@ -84,7 +84,7 @@ public class DeveloperController : MonoBehaviour
             ConnectEventToAction();
         }
     }
-    public void SetCurrentActionConnector(Button button) 
+    public void SetCurrentActionConnector(Button button)
     {
         if (currentActionConnector != button)
         {

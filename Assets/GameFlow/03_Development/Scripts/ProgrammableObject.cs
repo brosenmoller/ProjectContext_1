@@ -139,16 +139,16 @@ public class ProgrammableObject : MonoBehaviour
         }
     }
 
-    private bool GetActionFromActionType(ProgrammableActionType eventType, out Action action)
+    private bool GetActionFromActionType(ProgrammableActionType actionType, out Action action)
     {
-        if (actionTypeToAction.ContainsKey(eventType))
+        if (actionTypeToAction.ContainsKey(actionType))
         {
-            action = actionTypeToAction[eventType];
+            action = actionTypeToAction[actionType];
             return true;
         }
         else
         {
-            Debug.LogWarning(eventType.ToString() + " is undefined in actionTypeToAction Dictionary");
+            Debug.LogWarning(actionType.ToString() + " is undefined in actionTypeToAction Dictionary");
             action = null;
             return false;
         }
