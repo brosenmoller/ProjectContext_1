@@ -2,13 +2,6 @@
 
 public class ArtistController : MonoBehaviour
 {
-    public static ArtistController Instance { get; private set; }
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-
     public void OnArtistTurnEnd()
     {
         Color[,] pixelGrid = PixelBrushController.pixelGrid;
