@@ -91,7 +91,7 @@ public class PixelBrushController : MonoBehaviour
         GameManager.InputManager.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
 
         GameManager.InputManager.controls.Default.Erase.started += _ => currentBrushMode = BrushMode.Erasing;
-        GameManager.InputManager.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
+        GameManager.InputManager.controls.Default.Erase.canceled += _ => currentBrushMode = BrushMode.None;
 
         GameManager.InputManager.controls.Default.CursorMovement.performed += 
             ctx => CursorMovement(ctx.ReadValue<Vector2>());

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -51,6 +52,54 @@ public class DeveloperController : MonoBehaviour
     }
     #endregion
 
+    #region SmoothCurve By CodeTastic
+    // https://answers.unity.com/questions/392606/line-drawing-how-can-i-interpolate-between-points.html
+
+    public static Vector3[] MakeSmoothCurve(Vector3[] arrayToCurve, int resolution)
+    {
+        List<Vector3> points;
+        List<Vector3> curvedPoints;
+        int pointsLength = 0;
+        int curvedLength = 0;
+
+        if (resolution < 1) resolution = 1;
+
+        pointsLength = arrayToCurve.Length;
+
+        curvedLength = (pointsLength * resolution) - 1;
+        curvedPoints = new List<Vector3>(curvedLength);
+
+        float t = 0.0f;
+        for (int pointInTimeOnCurve = 0; pointInTimeOnCurve < curvedLength + 1; pointInTimeOnCurve++)
+        {
+            t = Mathf.InverseLerp(0, curvedLength, pointInTimeOnCurve);
+
+            points = new List<Vector3>(arrayToCurve);
+
+            for (int j = pointsLength - 1; j > 0; j--)
+            {
+                for (int i = 0; i < j; i++)
+                {
+                    points[i] = (1 - t) * points[i] + t * points[i + 1];
+                }
+            }
+
+            curvedPoints.Add(points[0]);
+        }
+
+        return (curvedPoints.ToArray());
+    }
+
+    #endregion
+
+    [Header("References")]
+    [SerializeField] private GameObject lineRendererPrefab;
+    
+    [Header("Settings")]
+    [SerializeField] private float bezierCurveInset;
+    [SerializeField, Range(4, 50)] private int bezierCurveResolution;
+
+    [Header("Event And Actino Connectors")]
     [SerializeField] private SerializableDictionary<Button, ProgrammableEventType> eventConnectors = new();
     [SerializeField] private SerializableDictionary<Button, ProgrammableActionType> actionConnectors = new();
 
@@ -58,14 +107,19 @@ public class DeveloperController : MonoBehaviour
     private Dictionary<ProgrammableEventType, ProgrammableActionType[]> localObject1EventsActions;
     private Dictionary<ProgrammableEventType, ProgrammableActionType[]> localObject2EventsActions;
 
-    private Button currentEventConnector;
-    private Button currentActionConnector;
+    private Dictionary<ProgrammableEventType, ProgrammableActionType[]> currentEventsActions;
+
+    private Button currentEventConnector = null;
+    private Button currentActionConnector = null;
+
+    private Dictionary<(ProgrammableEventType, ProgrammableActionType), GameObject> connectionTypeToLineRenderer = new();
 
     private void Awake()
     {
         localEnemyEventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
         localObject1EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
         localObject2EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
+        currentEventsActions = localObject1EventsActions;
     }
 
     public void SetCurrentEventConnector(Button button)
@@ -79,11 +133,12 @@ public class DeveloperController : MonoBehaviour
             currentEventConnector = null;
         }
 
-        if (currentEventConnector != null && currentEventConnector != null)
+        if (currentEventConnector != null && currentActionConnector != null)
         {
             ConnectEventToAction();
         }
     }
+
     public void SetCurrentActionConnector(Button button)
     {
         if (currentActionConnector != button)
@@ -95,7 +150,7 @@ public class DeveloperController : MonoBehaviour
             currentActionConnector = null;
         }
 
-        if (currentEventConnector != null && currentEventConnector != null)
+        if (currentEventConnector != null && currentActionConnector != null)
         {
             ConnectEventToAction();
         }
@@ -103,7 +158,81 @@ public class DeveloperController : MonoBehaviour
 
     private void ConnectEventToAction()
     {
-        //Instantiate();
+
+        ProgrammableEventType programmableEventType = eventConnectors[currentEventConnector];
+        ProgrammableActionType programmableActionType = actionConnectors[currentActionConnector];
+
+        if (currentEventsActions.ContainsKey(programmableEventType))
+        {
+            if (currentEventsActions[programmableEventType].Contains(programmableActionType)) 
+            {
+                GameObject lineToBeRemoved = connectionTypeToLineRenderer[(programmableEventType, programmableActionType)];
+                connectionTypeToLineRenderer.Remove((programmableEventType, programmableActionType));
+                Destroy(lineToBeRemoved);
+
+                if (currentEventsActions[programmableEventType].Length <= 1)
+                {
+                    currentEventsActions.Remove(programmableEventType);
+                }
+                else
+                {
+                    List<ProgrammableActionType> actions = currentEventsActions[programmableEventType].ToList();
+                    actions.Remove(programmableActionType);
+                    currentEventsActions[programmableEventType] = actions.ToArray();
+                }
+            }
+            else
+            {
+                List<ProgrammableActionType> actions = currentEventsActions[programmableEventType].ToList();
+                actions.Add(programmableActionType);
+                currentEventsActions[programmableEventType] = actions.ToArray();
+                AddLineBetweenSelectedConnectors();
+            }
+        }
+        else
+        {
+            currentEventsActions.Add(programmableEventType, new ProgrammableActionType[1] { programmableActionType });
+            AddLineBetweenSelectedConnectors();
+        }
+
+        currentActionConnector = null;
+        currentEventConnector = null;
+
+        //foreach (KeyValuePair<ProgrammableEventType, ProgrammableActionType[]> item in localObject1EventsActions)
+        //{
+        //    Debug.Log("---- Event : " + item.Key.ToString() + " ----");
+        //    for (int i = 0; i < item.Value.Length; i++)
+        //    {
+        //        Debug.Log(item.Value[i]);
+        //    }
+        //}
+    }
+
+    private void AddLineBetweenSelectedConnectors()
+    {
+
+        ProgrammableEventType programmableEventType = eventConnectors[currentEventConnector];
+        ProgrammableActionType programmableActionType = actionConnectors[currentActionConnector];
+
+        Vector3[] lineVertices = new Vector3[4]
+        {
+            currentEventConnector.transform.position - new Vector3(0, 0, 90),
+            currentEventConnector.transform.position + Vector3.right * bezierCurveInset - new Vector3(0, 0, 90),
+            currentActionConnector.transform.position + Vector3.left * bezierCurveInset - new Vector3(0, 0, 90),
+            currentActionConnector.transform.position - new Vector3(0, 0, 90)
+        };
+
+        GameObject newLine = Instantiate(lineRendererPrefab, currentEventConnector.transform.position, Quaternion.identity);
+        connectionTypeToLineRenderer.Add((programmableEventType, programmableActionType), newLine);
+        LineRenderer newLineRenderer = newLine.GetComponent<LineRenderer>();
+
+
+        Color color = new(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+        newLineRenderer.startColor = color;
+        newLineRenderer.endColor = color;
+
+        newLineRenderer.positionCount = 4;
+        newLineRenderer.SetPositions(lineVertices);
     }
 
     public void DeveloperTurnEnd()

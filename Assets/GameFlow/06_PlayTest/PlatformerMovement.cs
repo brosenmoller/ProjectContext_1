@@ -181,6 +181,7 @@ public class PlatformerMovement : MonoBehaviour
             characterHolder.localPosition = Vector3.Lerp(oldPos, newPos, time);
             yield return null;
         }
+
         time = 0f;
         while (time <= 1.0)
         {
