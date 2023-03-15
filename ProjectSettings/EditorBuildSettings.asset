@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/GameFlow/03_Development/DeveloperScene.unity
     guid: 7bc1fd61644147f46bd2ace4919a4da0
   - enabled: 1
+    path: Assets/GameFlow/04_Art/ArtistScene.unity
+    guid: 4185ea7bbd877394b8ed297dbe7d6d29
+  - enabled: 1
     path: Assets/GameFlow/05_Design/DesignScene.unity
     guid: 35fb668e4474bab4189f93a6eb982da2
   - enabled: 1
