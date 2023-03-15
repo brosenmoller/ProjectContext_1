@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="50.74699mm"
+   height="101.04944mm"
+   viewBox="0 0 50.74699 101.04944"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="tekening.svg"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:lockguides="true"
+     inkscape:zoom="2.0917228"
+     inkscape:cx="282.78126"
+     inkscape:cy="787.8673"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer11"
+     showguides="true">
+    <sodipodi:guide
+       position="193.25243,286.22761"
+       orientation="0,-1"
+       id="guide2849"
+       inkscape:locked="true" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient9320"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#d1d1d1;stop-opacity:1;"
+         offset="0"
+         id="stop9318" />
+    </linearGradient>
+  </defs>
+  <g
+     inkscape:groupmode="layer"
+     id="layer11"
+     inkscape:label="Mouse Icon"
+     inkscape:export-filename="layer11.svg"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96"
+     transform="translate(-19.959708,-167.03967)">
+    <path
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2.78248;stroke-linecap:square;stroke-linejoin:bevel;stroke-dasharray:none;stroke-dashoffset:1.66299;stroke-opacity:0.359862;paint-order:markers fill stroke"
+       d="M 69.266981,208.14642 H 43.968858 v -39.71039 c 18.050399,-0.30317 26.04449,12.27141 25.298123,39.71039"
+       id="path2751-8"
+       sodipodi:nodetypes="cccc" />
+    <ellipse
+       style="fill:#ffffff;stroke:none;stroke-width:7.17883;stroke-dashoffset:1.66299;stroke-opacity:0.359862"
+       id="path2307"
+       cx="45.283646"
+       cy="237.51389"
+       rx="25.298126"
+       ry="30.575226" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:9.13023;stroke-dashoffset:1.66299;stroke-opacity:0.359862"
+       id="rect2475"
+       width="50.596252"
+       height="32.825356"
+       x="19.985519"
+       y="206.75008" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:6.9883;stroke-dashoffset:1.66299;stroke-opacity:0.359862"
+       d="m 19.985519,206.75007 h 25.298127 v -39.71039 c -18.184621,0.85285 -25.829409,12.27505 -25.298127,39.71039"
+       id="path2751"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.78248;stroke-linecap:square;stroke-linejoin:bevel;stroke-dasharray:none;stroke-dashoffset:1.66299;stroke-opacity:0.601036;paint-order:markers fill stroke"
+       d="m 45.283646,168.43092 -3e-6,36.83159"
+       id="path3509" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2.6;stroke-linecap:square;stroke-linejoin:bevel;stroke-dasharray:none;stroke-dashoffset:1.66299;stroke-opacity:1;paint-order:markers fill stroke"
+       id="rect3337"
+       width="9.2062588"
+       height="20.39287"
+       x="40.680515"
+       y="176.69844"
+       ry="3.6224179" />
+  </g>
+</svg>
