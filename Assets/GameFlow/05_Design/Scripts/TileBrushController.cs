@@ -50,8 +50,6 @@ public class TileBrushController : MonoBehaviour
 
         GameManager.InputManager.controls.Default.CursorMovement.performed += 
             ctx => CursorMovement(ctx.ReadValue<Vector2>());
-
-        GameManager.InputManager.controls.Default.Jump.started += _ => { if (selectedCellContent == GridCellContent.GroundTileVariation1) selectedCellContent = GridCellContent.GroundTileVariation2; else selectedCellContent = GridCellContent.GroundTileVariation1; };
     }
 
     private void Update()
