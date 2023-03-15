@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="45mm"
+   height="45mm"
+   viewBox="0 0 45 45"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient9320">
+      <stop
+         style="stop-color:#d1d1d1;stop-opacity:1;"
+         offset="0"
+         id="stop9318" />
+    </linearGradient>
+  </defs>
+  <g
+     id="layer4-5"
+     style="display:inline"
+     transform="translate(-50,-50)">
+    <g
+       id="g3046-4">
+      <rect
+         style="fill:#323232;fill-opacity:1;stroke-width:3.8504;stroke-dasharray:none"
+         id="rect1662-2-6-7"
+         width="45"
+         height="45"
+         x="50"
+         y="50"
+         rx="6.3957548"
+         ry="6.3957548" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:7.94865px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';fill:#757575;fill-opacity:1;stroke-width:0.667461;stroke-dasharray:1.33492, 0.667461;stroke-dashoffset:0.734206"
+         x="57.778976"
+         y="89.840302"
+         id="text1173-6"><tspan
+           id="tspan1171-3"
+           style="fill:#757575;fill-opacity:1;stroke-width:0.667461"
+           x="57.778976"
+           y="89.840302">Forest</tspan></text>
+      <g
+         id="g3868-3"
+         transform="matrix(0.8781143,0,0,0.80033335,8.8367172,11.129021)"
+         style="display:none">
+        <path
+           style="fill:#666666;stroke-width:2.3;stroke-dasharray:4.59999, 2.3;stroke-dashoffset:2.53"
+           id="path388-5-3-2-2-0-7"
+           d="m 61.185798,68.602303 -20.80617,12.012447 0,-24.024895 z"
+           transform="matrix(0,-0.66987205,-0.87408342,0,132.07329,107.44015)" />
+        <path
+           style="fill:#666666;stroke-width:2.3;stroke-dasharray:4.59999, 2.3;stroke-dashoffset:2.53"
+           id="path388-5-3-2-2-7"
+           d="m 61.185798,68.602303 -20.80617,12.012447 0,-24.024895 z"
+           transform="matrix(0,-0.57318845,-0.74792569,0,123.41858,97.070265)" />
+        <path
+           style="fill:#666666;stroke-width:2.3;stroke-dasharray:4.59999, 2.3;stroke-dashoffset:2.53"
+           id="path388-5-3-2-6"
+           d="m 61.185798,68.602303 -20.80617,12.012447 0,-24.024895 z"
+           transform="matrix(0,-0.44097807,-0.57541081,0,111.58366,86.125566)" />
+        <rect
+           style="fill:#666666;fill-opacity:1;stroke-width:2.3;stroke-dasharray:4.59999, 2.3;stroke-dashoffset:2.53"
+           id="rect3922-0"
+           width="6.6187363"
+           height="6.9765053"
+           x="69.190628"
+           y="79.037956" />
+      </g>
+    </g>
+    <path
+       style="fill:#999999;stroke-width:2.3;stroke-dasharray:4.59999, 2.3;stroke-dashoffset:2.53"
+       d="m 72.5,59.138603 -6.069609,7.343111 h 1.88888 l -3.708617,4.486743 h 2.946614 l -4.277364,5.174824 h 6.657297 v 4.500676 h 5.812005 v -4.500676 h 5.970889 l -4.32228,-5.174824 h 2.991532 l -3.684711,-4.486743 h 1.864971 z"
+       id="path662-5" />
+  </g>
+</svg>

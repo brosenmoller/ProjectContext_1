@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="45mm"
+   height="45mm"
+   viewBox="0 0 45 45"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient9320">
+      <stop
+         style="stop-color:#d1d1d1;stop-opacity:1;"
+         offset="0"
+         id="stop9318" />
+    </linearGradient>
+    <rect
+       x="257.07712"
+       y="202.78275"
+       width="70.424446"
+       height="43.938309"
+       id="rect534" />
+  </defs>
+  <g
+     id="layer6"
+     style="display:inline">
+    <g
+       id="g536"
+       style="display:inline">
+      <rect
+         style="fill:#323232;fill-opacity:1;stroke-width:2.2006;stroke-dasharray:none"
+         id="rect1662"
+         width="45"
+         height="45"
+         x="0"
+         y="0"
+         rx="6.3957548"
+         ry="6.3957548" />
+      <text
+         xml:space="preserve"
+         transform="matrix(0.59174985,0,0,0.77061916,-149.52264,-149.80366)"
+         id="text532"
+         style="white-space:pre;shape-inside:url(#rect534);display:inline;fill:#666666;fill-opacity:1"><tspan
+           x="257.07617"
+           y="213.73117"
+           id="tspan4279">0100 0101
+</tspan><tspan
+           x="257.07617"
+           y="228.73117"
+           id="tspan4281">0010 0101
+</tspan><tspan
+           x="257.07617"
+           y="243.73117"
+           id="tspan4283">0001 001</tspan></text>
+    </g>
+  </g>
+</svg>

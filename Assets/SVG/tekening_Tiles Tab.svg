@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="52.318756mm"
+   height="10.27394mm"
+   viewBox="0 0 52.318756 10.27394"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient9320">
+      <stop
+         style="stop-color:#d1d1d1;stop-opacity:1;"
+         offset="0"
+         id="stop9318" />
+    </linearGradient>
+  </defs>
+  <g
+     id="layer5-6"
+     style="display:inline"
+     transform="translate(0.14886884,-176.69938)">
+    <g
+       id="g3660-9"
+       style="display:inline"
+       transform="translate(-0.31837102,32.974038)">
+      <path
+         style="fill:#808080;fill-opacity:1;stroke:none;stroke-width:1.59775;stroke-dasharray:3.19551, 1.59775;stroke-dashoffset:1.75753;stroke-opacity:1"
+         d="M 0.16950218,153.99928 5.5853796,143.72534 H 47.07238 c 0,0 5.415877,10.27394 5.415877,10.27394 0,0 -52.31875482,0 -52.31875482,0 z"
+         id="path12002-3" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.25502px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';fill:#6c5353;stroke-width:0.357301;stroke-dasharray:0.7146, 0.357301;stroke-dashoffset:0.393031"
+         x="7.5032206"
+         y="122.49386"
+         id="text1634-6-0"
+         transform="scale(0.81594966,1.2255658)"><tspan
+           id="tspan1632-4-9"
+           style="fill:#ececec;stroke-width:0.357301"
+           x="7.5032206"
+           y="122.49386">Tiles </tspan></text>
+      <rect
+         style="fill:none;stroke:#ffffff;stroke-width:0.7;stroke-dasharray:1.4, 0.7;stroke-dashoffset:0.77;stroke-opacity:1"
+         id="rect1894-8"
+         width="5.5655875"
+         height="5.5655875"
+         x="40.09618"
+         y="146.07951" />
+    </g>
+  </g>
+</svg>
