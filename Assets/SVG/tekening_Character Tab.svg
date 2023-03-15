@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="52.31876mm"
+   height="10.27394mm"
+   viewBox="0 0 52.31876 10.27394"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient9320">
+      <stop
+         style="stop-color:#d1d1d1;stop-opacity:1;"
+         offset="0"
+         id="stop9318" />
+    </linearGradient>
+  </defs>
+  <g
+     id="layer5-8"
+     style="display:inline"
+     transform="translate(-54.457221,-143.72534)">
+    <g
+       id="g3667-9"
+       style="display:inline">
+      <path
+         style="fill:#808080;fill-opacity:1;stroke:none;stroke-width:1.59775;stroke-dasharray:3.19551, 1.59775;stroke-dashoffset:1.75753;stroke-opacity:1"
+         d="m 54.457221,153.99928 5.415878,-10.27394 H 101.3601 c 0,0 5.41588,10.27394 5.41588,10.27394 0,0 -52.318759,0 -52.318759,0 z"
+         id="path12002-7-0" />
+      <circle
+         style="fill:#f2f2f2;stroke-width:1.61657;stroke-dasharray:3.23314, 1.61657;stroke-dashoffset:1.77824"
+         id="path772-4"
+         cx="95.176476"
+         cy="145.99538"
+         r="1.7781024" />
+      <path
+         style="fill:#f2f2f2;stroke-width:1.12734;stroke-dasharray:2.25468, 1.12734;stroke-dashoffset:1.24007"
+         d="m 93.39837,148.18147 h 3.556211 v 5.08857 h -1.298155 v -2.36912 h -0.959901 v 2.36912 H 93.39837 Z"
+         id="path959-2" />
+      <text
+         xml:space="preserve"
+         style="font-weight:bold;font-size:4.25502px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Bold';fill:#6c5353;stroke-width:0.357301;stroke-dasharray:0.7146, 0.357301;stroke-dashoffset:0.393031"
+         x="74.136223"
+         y="122.49386"
+         id="text1634-61"
+         transform="scale(0.81594966,1.2255658)"><tspan
+           id="tspan1632-46"
+           style="fill:#ececec;stroke-width:0.357301"
+           x="74.136223"
+           y="122.49386">Character</tspan></text>
+    </g>
+  </g>
+</svg>
