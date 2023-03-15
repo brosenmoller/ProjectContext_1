@@ -135,6 +135,7 @@ public class GameManager : MonoBehaviour
 
     public void SetPlayerSprite(Sprite sprite) => GameData.playerSprite = sprite;
     public void SetEnemySprite(Sprite sprite) => GameData.programmableEnemySprite = sprite;
+    public void SetFinishSprite(Sprite sprite) => GameData.finishSprite = sprite;
     public void SetProgrammableObject1Sprite(Sprite sprite) => GameData.programmableObject1Sprite = sprite;
     public void SetProgrammableObject2Sprite(Sprite sprite) => GameData.programmableObject2Sprite = sprite;
 
@@ -156,6 +157,7 @@ public class GameManager : MonoBehaviour
     )
     => GameData.programmableEnemyEventsActions = dictionary;
 
+    public void SetLevelLayout(Dictionary<Vector3Int, GridCellContent> dictionary) => GameData.levelLayout = dictionary;
 
     #endregion
 }
