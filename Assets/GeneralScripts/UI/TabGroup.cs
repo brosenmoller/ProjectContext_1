@@ -38,7 +38,7 @@ public class TabGroup : MonoBehaviour
         tabButton.background.sprite = tabHover;
     }
 
-    public void OnTabExit(TabSelectorButton tabButton)
+    public void OnTabExit()
     {
         ResetTabs();
     }

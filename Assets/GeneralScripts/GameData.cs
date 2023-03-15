@@ -13,10 +13,13 @@ public class GameData
     public Sprite programmableEnemySprite;
     public Sprite programmableObject1Sprite; 
     public Sprite programmableObject2Sprite;
+    public Sprite finishSprite;
 
     public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableEnemyEventsActions;
     public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableObject1EventsActions;
     public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableObject2EventsActions;
+
+    public Dictionary<Vector3Int, GridCellContent> levelLayout;
 }
 
 public enum GameTheme

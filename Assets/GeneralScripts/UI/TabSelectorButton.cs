@@ -34,7 +34,7 @@ public class TabSelectorButton : MonoBehaviour, IPointerClickHandler, IPointerEn
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        tabGroup.OnTabExit(this);
+        tabGroup.OnTabExit();
     }
 
     public void Select()
