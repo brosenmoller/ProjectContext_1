@@ -5,80 +5,122 @@ using UnityEngine.SceneManagement;
 
 public class ProgrammableObject : MonoBehaviour
 {
+    [SerializeField] private LayerMask playerLayer;
+
+    private GameObject player;
+    private Rigidbody2D playerRB;
+    private Rigidbody2D rb;
+
+    private bool movingForward = false;
+    private bool flipped = false;
+    private bool playerInRange = false;
+
     private void Start()
     {
-        Dictionary<ProgrammableEventType, ProgrammableActionType[]> tempDict = new()
-        {
-            { ProgrammableEventType.ON_PLAYER_COLLIDE, new ProgrammableActionType[] { ProgrammableActionType.RELOAD_SCENE } }
-        };
+        player = FindObjectOfType<PlatformerMovement>().gameObject;
+        playerRB = player.GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
 
-        SetUpProgrammableEvents(tempDict);
+        InvokeEvent(ProgrammableEventType.ON_START);
     }
 
-    private readonly Dictionary<ProgrammableActionType, Action> actionTypeToAction = new()
+    private void Update()
+    {
+        if (movingForward)
+        {
+            float xVelocity = flipped ? -300f : 300f;
+            rb.velocity = new Vector2(xVelocity * Time.deltaTime, rb.velocity.y);
+        }
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, player.transform.position - transform.position, 5f, playerLayer);
+        if (hit)
+        {
+            if (!playerInRange)
+            {
+                InvokeEvent(ProgrammableEventType.ON_PLAYER_IN_RANGE);
+                playerInRange = true;
+            }
+        }
+        else
+        {
+            playerInRange = false;
+        }
+    }
+
+    private readonly Dictionary<ProgrammableActionType, Action<ProgrammableObject>> actionTypeToAction = new()
     {
         {
-            ProgrammableActionType.RELOAD_SCENE, () =>
+            ProgrammableActionType.RELOAD_SCENE, (ProgrammableObject thisObject) =>
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         },
         {
-            ProgrammableActionType.PLAYER_BIG_JUMP, () =>
+            ProgrammableActionType.PLAYER_BIG_JUMP, (ProgrammableObject thisObject) =>
+            {
+                thisObject.playerRB.velocity = new Vector2(thisObject.playerRB.velocity.x, 25f);
+            }
+        },
+        {
+            ProgrammableActionType.PLAYER_PLUS_ONE_HP, (ProgrammableObject thisObject) =>
             {
                 
             }
         },
         {
-            ProgrammableActionType.PLAYER_PLUS_ONE_HP, () =>
+            ProgrammableActionType.PLAYER_MINUS_ONE_HP, (ProgrammableObject thisObject) =>
             {
                 
             }
         },
         {
-            ProgrammableActionType.PLAYER_MINUS_ONE_HP, () =>
+            ProgrammableActionType.OBJECT_MOVE_FORWARD, (ProgrammableObject thisObject) =>
+            {
+                thisObject.movingForward = true;
+            }
+        },
+        {
+            ProgrammableActionType.OBJECT_JUMP, (ProgrammableObject thisObject) =>
+            {
+                thisObject.rb.velocity = new Vector2(thisObject.rb.velocity.x, 18f);
+            }
+        },
+        {
+            ProgrammableActionType.OBJECT_TURN_AROUND, (ProgrammableObject thisObject) =>
+            {
+                if (thisObject.flipped)
+                {
+                    thisObject.transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                else
+                {
+                    thisObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+                }
+
+                thisObject.flipped = !thisObject.flipped;
+            }
+        },
+        {
+            ProgrammableActionType.OBJECT_STOP_MOVING, (ProgrammableObject thisObject)    =>
+            {
+                thisObject.movingForward = false;
+            }
+        },
+        {
+            ProgrammableActionType.OBJECT_PAUSE_MOVING_3_SECONDS, (ProgrammableObject thisObject) =>
+            {
+                thisObject.movingForward = false;
+                new Timer(3, () => thisObject.movingForward = true);
+            }
+        },
+        {
+            ProgrammableActionType.OBJECT_MOVE_DOWN, (ProgrammableObject thisObject) =>
             {
                 
             }
         },
         {
-            ProgrammableActionType.OBJECT_MOVE_FORWARD, () =>
-            {
-                
-            }
-        },
-        {
-            ProgrammableActionType.OBJECT_JUMP, () =>
-            {
-                
-            }
-        },
-        {
-            ProgrammableActionType.OBJECT_TURN_AROUND, () =>
-            {
-                
-            }
-        },
-        {
-            ProgrammableActionType.OBJECT_STOP_MOVING, () =>
-            {
-                
-            }
-        },
-        {
-            ProgrammableActionType.OBJECT_PAUSE_MOVING_3_SECONDS, () =>
-            {
-                
-            }
-        },
-        {
-            ProgrammableActionType.OBJECT_MOVE_DOWN, () =>
-            {
-                
-            }
-        },
-        {
-            ProgrammableActionType.OBJECT_MOVE_UP, () =>
+            ProgrammableActionType.OBJECT_MOVE_UP, (ProgrammableObject thisObject) =>
             {
                 
             }
@@ -86,15 +128,14 @@ public class ProgrammableObject : MonoBehaviour
     };
 
 
-    private readonly Dictionary<ProgrammableEventType, Action> localEventDictionary = new()
+    private readonly Dictionary<ProgrammableEventType, Action<ProgrammableObject>> eventDictionary = new()
     {
+        // Local
         { ProgrammableEventType.ON_PLAYER_COLLIDE, null },
         { ProgrammableEventType.ON_PLAYER_IN_RANGE, null },
         { ProgrammableEventType.ON_COLLIDE, null },
-    };
 
-    private static readonly Dictionary<ProgrammableEventType, Action> staticEventDictionary = new()
-    {
+        // Global
         { ProgrammableEventType.ON_START, null },
         { ProgrammableEventType.ON_PLAYER_JUMP, null },
         { ProgrammableEventType.ON_PLAYER_WALK, null },
@@ -106,40 +147,27 @@ public class ProgrammableObject : MonoBehaviour
 
     public void SetUpProgrammableEvents(Dictionary<ProgrammableEventType, ProgrammableActionType[]> developerActions)
     {
-        foreach (ProgrammableEventType eventType in staticEventDictionary.Keys)
-        {
-            staticEventDictionary[eventType] = null;
-        }
-
         foreach (KeyValuePair<ProgrammableEventType, ProgrammableActionType[]> developerAction in developerActions)
         {
             foreach (ProgrammableActionType actionType in developerAction.Value)
             {
-                if (localEventDictionary.ContainsKey(developerAction.Key))
+                if (eventDictionary.ContainsKey(developerAction.Key))
                 {
-                    if (GetActionFromActionType(actionType, out Action action))
+                    if (GetActionFromActionType(actionType, out Action<ProgrammableObject> action))
                     {
-                        localEventDictionary[developerAction.Key] -= action;
-                        localEventDictionary[developerAction.Key] += action;
-                    }
-                }
-                else if (staticEventDictionary.ContainsKey(developerAction.Key))
-                {
-                    if (GetActionFromActionType(actionType, out Action action))
-                    {
-                        staticEventDictionary[developerAction.Key] -= action;
-                        staticEventDictionary[developerAction.Key] += action;
+                        eventDictionary[developerAction.Key] -= action;
+                        eventDictionary[developerAction.Key] += action;
                     }
                 }
                 else
                 {
-                    Debug.LogWarning(developerAction.Key.ToString() + " is undefined in both of the event dictionaries");
+                    Debug.LogWarning(developerAction.Key.ToString() + " is undefined in the event dictionary");
                 }
             }
         }
     }
 
-    private bool GetActionFromActionType(ProgrammableActionType actionType, out Action action)
+    private bool GetActionFromActionType(ProgrammableActionType actionType, out Action<ProgrammableObject> action)
     {
         if (actionTypeToAction.ContainsKey(actionType))
         {
@@ -160,21 +188,21 @@ public class ProgrammableObject : MonoBehaviour
         {
             InvokeEvent(ProgrammableEventType.ON_PLAYER_COLLIDE);
         }
+        else
+        {
+            InvokeEvent(ProgrammableEventType.ON_COLLIDE);
+        }
     }
 
     public void InvokeEvent(ProgrammableEventType eventType)
     {
-        if (localEventDictionary.ContainsKey(eventType))
+        if (eventDictionary.ContainsKey(eventType))
         {
-            localEventDictionary[eventType]?.Invoke();
-        }
-        else if (staticEventDictionary.ContainsKey(eventType))
-        {
-            staticEventDictionary[eventType]?.Invoke();
+            eventDictionary[eventType]?.Invoke(this);
         }
         else
-        { 
-            Debug.LogWarning(eventType.ToString() + " is undefined in both of the event dictionaries");
+        {
+            Debug.LogWarning(eventType.ToString() + " is undefined in the event dictionary");
         }
     }
 }

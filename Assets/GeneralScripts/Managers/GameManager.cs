@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         6, // Third PlayTest Turn
     };
 
-    private int currentGameFlowFase = 5;
+    private int currentGameFlowFase = 0;
 
     private void Awake()
     {
@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Destroy(Instance);
+            Destroy(gameObject);
         }
     }
 

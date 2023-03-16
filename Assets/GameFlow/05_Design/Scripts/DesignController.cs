@@ -48,13 +48,13 @@ public class DesignController : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.SetPlayerSprite(testPlayerSprite);
+        //GameManager.Instance.SetPlayerSprite(testPlayerSprite);
         GameManager.Instance.SetEnemySprite(testEnemySprite);
         GameManager.Instance.SetProgrammableObject1Sprite(testProgrammable1Sprite);
         GameManager.Instance.SetProgrammableObject2Sprite(testProgrammable2Sprite);
         GameManager.Instance.SetFinishSprite(testFinishSprite);
 
-        playerButtonImage.sprite = testPlayerSprite;
+        playerButtonImage.sprite = GameManager.Instance.GameData.playerSprite;
         enemyButtonImage.sprite = testEnemySprite;
         programmable1ButtonImage.sprite = testProgrammable1Sprite;
         programmable2ButtonImage.sprite = testProgrammable2Sprite;

@@ -1,7 +1,10 @@
 using Cinemachine;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static UnityEditor.Searcher.Searcher.AnalyticsEvent;
 
 public class PlayTestController : MonoBehaviour
 {
@@ -22,9 +25,73 @@ public class PlayTestController : MonoBehaviour
     [SerializeField] private GameObject finishPrefab;
     [SerializeField] private GameObject programmableOjectPrefab;
 
+    private List<ProgrammableObject> programmableObjects = new();
+
+    private Timer halfSecondTimer;
+    private Timer threeSecondTimer;
+    private Timer tenSecondTimer;
+
     private void Awake()
     {
+        programmableObjects.Clear();
         SetupField();
+    }
+
+    private void Start()
+    {
+        halfSecondTimer = new Timer(.5f, () =>
+        {
+            foreach (ProgrammableObject obj in programmableObjects)
+            {
+                obj.InvokeEvent(ProgrammableEventType.EVERY_HALF_SECOND);
+            }
+        }, true, true);
+
+        threeSecondTimer = new Timer(3f, () =>
+        {
+            foreach (ProgrammableObject obj in programmableObjects)
+            {
+                obj.InvokeEvent(ProgrammableEventType.EVERY_3_SECONDS);
+            }
+        }, true, true);
+
+        tenSecondTimer = new Timer(10f, () =>
+        {
+            foreach (ProgrammableObject obj in programmableObjects)
+            {
+                obj.InvokeEvent(ProgrammableEventType.EVERY_10_SECONDS);
+            }
+        }, true, true);
+    }
+
+    public void OnPlayerWalk()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.ON_PLAYER_WALK);
+        }
+    }
+
+    public void OnPlayerStop()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.ON_PlAYER_STOP);
+        }
+    }
+    public void OnPlayerJump()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.ON_PLAYER_JUMP);
+        }
+    }
+
+    private void OnDisable()
+    {
+        halfSecondTimer.Pause();
+        threeSecondTimer.Pause();
+        tenSecondTimer.Pause();
     }
 
     private void SetupField()
@@ -44,35 +111,38 @@ public class PlayTestController : MonoBehaviour
                     break;
 
                 case GridCellContent.Player:
-                    GameObject player = Instantiate(playerPrefab, cell.Key, Quaternion.identity);
-                    player.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GameData.playerSprite;
+                    GameObject player = Instantiate(playerPrefab, (Vector3)cell.Key + new Vector3(.5f, .5f, 0), Quaternion.identity);
+                    player.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GameData.playerSprite;
                     virtualCamera.Follow = player.transform;
                     break;
 
                 case GridCellContent.Finish:
-                    GameObject finishObject = Instantiate(finishPrefab, cell.Key, Quaternion.identity);
+                    GameObject finishObject = Instantiate(finishPrefab, (Vector3)cell.Key + new Vector3(.5f, .5f, 0), Quaternion.identity);
                     finishObject.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GameData.finishSprite;
                     break;
 
                 case GridCellContent.Enemy:
-                    GameObject enemyObject = Instantiate(programmableOjectPrefab, cell.Key, Quaternion.identity);
+                    GameObject enemyObject = Instantiate(programmableOjectPrefab, (Vector3)cell.Key + new Vector3(.5f, .5f, 0), Quaternion.identity);
                     ProgrammableObject enemyScript = enemyObject.GetComponent<ProgrammableObject>();
                     enemyScript.SetUpProgrammableEvents(GameManager.Instance.GameData.programmableEnemyEventsActions);
                     enemyObject.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GameData.programmableEnemySprite;
+                    programmableObjects.Add(enemyScript);
                     break;
 
                 case GridCellContent.ProgrammableObject1:
-                    GameObject programmableObject1 = Instantiate(programmableOjectPrefab, cell.Key, Quaternion.identity);
+                    GameObject programmableObject1 = Instantiate(programmableOjectPrefab, (Vector3)cell.Key + new Vector3(.5f, .5f, 0), Quaternion.identity);
                     ProgrammableObject object1Script = programmableObject1.GetComponent<ProgrammableObject>();
-                    object1Script.SetUpProgrammableEvents(GameManager.Instance.GameData.programmableEnemyEventsActions);
+                    object1Script.SetUpProgrammableEvents(GameManager.Instance.GameData.programmableObject1EventsActions);
                     programmableObject1.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GameData.programmableObject1Sprite;
+                    programmableObjects.Add(object1Script);
                     break;
 
                 case GridCellContent.ProgrammableObject2:
-                    GameObject programmableObject2 = Instantiate(programmableOjectPrefab, cell.Key, Quaternion.identity);
+                    GameObject programmableObject2 = Instantiate(programmableOjectPrefab, (Vector3)cell.Key + new Vector3(.5f, .5f, 0), Quaternion.identity);
                     ProgrammableObject object2Script = programmableObject2.GetComponent<ProgrammableObject>();
-                    object2Script.SetUpProgrammableEvents(GameManager.Instance.GameData.programmableEnemyEventsActions);
+                    object2Script.SetUpProgrammableEvents(GameManager.Instance.GameData.programmableObject2EventsActions);
                     programmableObject2.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GameData.programmableObject2Sprite;
+                    programmableObjects.Add(object2Script);
                     break;
             }
         }
@@ -88,6 +158,8 @@ public class PlayTestController : MonoBehaviour
             _ => futuristicGroundTile1,
         };
 
+        tile = futuristicGroundTile1;
+
         groundTilemap.SetTile(placementPosition, tile);
     }
 
@@ -100,6 +172,8 @@ public class PlayTestController : MonoBehaviour
             GameTheme.Castle => castleGroundTile2,
             _ => futuristicGroundTile2,
         };
+
+        tile = futuristicGroundTile2;
 
         groundTilemap.SetTile(placementPosition, tile);
     }
