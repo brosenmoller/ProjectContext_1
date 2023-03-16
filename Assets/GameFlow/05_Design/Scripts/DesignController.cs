@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEngine.UI;
+using UnityEngine;
 
 public enum GridCellContent
 {
@@ -20,6 +21,19 @@ public class DesignController : MonoBehaviour
     [SerializeField] private LineRenderer borderLine;
     [SerializeField] private TileBrushController tileBrushController;
 
+    [Header("UI Images")]
+    [SerializeField] private Image playerButtonImage;
+    [SerializeField] private Image enemyButtonImage;
+    [SerializeField] private Image programmable1ButtonImage;
+    [SerializeField] private Image programmable2ButtonImage;
+    [SerializeField] private Image finishButtonImage;
+    [SerializeField] private Image mainGroundTileButtonImage;
+    [SerializeField] private Image secondaryGroundTileButtonImage;
+
+    [Header("Themed Tiles")]
+    [SerializeField] private Sprite mainFuturisticTile;
+    [SerializeField] private Sprite secondaryFuturisticTile;
+
     [Header("Testing (TEMPORARY)")]
     [SerializeField] private Sprite testPlayerSprite;
     [SerializeField] private Sprite testEnemySprite;
@@ -34,11 +48,20 @@ public class DesignController : MonoBehaviour
 
     private void Start()
     {
-        GameManager.Instance.SetPlayerSprite(testPlayerSprite);
+        //GameManager.Instance.SetPlayerSprite(testPlayerSprite);
         GameManager.Instance.SetEnemySprite(testEnemySprite);
         GameManager.Instance.SetProgrammableObject1Sprite(testProgrammable1Sprite);
         GameManager.Instance.SetProgrammableObject2Sprite(testProgrammable2Sprite);
         GameManager.Instance.SetFinishSprite(testFinishSprite);
+
+        playerButtonImage.sprite = GameManager.Instance.GameData.playerSprite;
+        enemyButtonImage.sprite = testEnemySprite;
+        programmable1ButtonImage.sprite = testProgrammable1Sprite;
+        programmable2ButtonImage.sprite = testProgrammable2Sprite;
+        finishButtonImage.sprite = testFinishSprite;
+
+        mainGroundTileButtonImage.sprite = mainFuturisticTile;
+        secondaryGroundTileButtonImage.sprite = secondaryFuturisticTile;
     }
 
     private void SetupBorder()

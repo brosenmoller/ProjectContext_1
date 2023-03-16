@@ -103,6 +103,9 @@ public class DeveloperController : MonoBehaviour
     [SerializeField] private SerializableDictionary<Button, ProgrammableEventType> eventConnectors = new();
     [SerializeField] private SerializableDictionary<Button, ProgrammableActionType> actionConnectors = new();
 
+    private Dictionary<ProgrammableEventType, Button> eventConnectorButtons = new();
+    private Dictionary<ProgrammableActionType, Button> actionConnectorButtons = new();
+
     private Dictionary<ProgrammableEventType, ProgrammableActionType[]> localEnemyEventsActions;
     private Dictionary<ProgrammableEventType, ProgrammableActionType[]> localObject1EventsActions;
     private Dictionary<ProgrammableEventType, ProgrammableActionType[]> localObject2EventsActions;
@@ -116,10 +119,29 @@ public class DeveloperController : MonoBehaviour
 
     private void Awake()
     {
-        localEnemyEventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
-        localObject1EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
-        localObject2EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
-        currentEventsActions = localObject1EventsActions;
+        foreach (SerializableKeyValuePair<Button, ProgrammableEventType> keyValuePair in eventConnectors)
+        {
+            eventConnectorButtons.Add(keyValuePair.value, keyValuePair.key);
+        }
+
+        foreach (SerializableKeyValuePair<Button, ProgrammableActionType> keyValuePair in actionConnectors)
+        {
+            actionConnectorButtons.Add(keyValuePair.value, keyValuePair.key);
+        }
+
+        localEnemyEventsActions = GameManager.Instance.GameData.programmableEnemyEventsActions != null ?
+            localEnemyEventsActions = GameManager.Instance.GameData.programmableEnemyEventsActions :
+            localEnemyEventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
+
+        localObject1EventsActions = GameManager.Instance.GameData.programmableObject1EventsActions != null ?
+            localObject1EventsActions = GameManager.Instance.GameData.programmableObject1EventsActions :
+            localObject1EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
+
+        localObject2EventsActions = GameManager.Instance.GameData.programmableObject2EventsActions != null ?
+            localObject2EventsActions = GameManager.Instance.GameData.programmableObject2EventsActions :
+            localObject2EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
+
+        SetCurrentEventsActions_ProgrammableObject1();
     }
 
     public void SetCurrentEventConnector(Button button)
@@ -158,7 +180,6 @@ public class DeveloperController : MonoBehaviour
 
     private void ConnectEventToAction()
     {
-
         ProgrammableEventType programmableEventType = eventConnectors[currentEventConnector];
         ProgrammableActionType programmableActionType = actionConnectors[currentActionConnector];
 
@@ -186,34 +207,21 @@ public class DeveloperController : MonoBehaviour
                 List<ProgrammableActionType> actions = currentEventsActions[programmableEventType].ToList();
                 actions.Add(programmableActionType);
                 currentEventsActions[programmableEventType] = actions.ToArray();
-                AddLineBetweenSelectedConnectors();
+                AddLineBetweenSelectedConnectors(programmableEventType, programmableActionType);
             }
         }
         else
         {
             currentEventsActions.Add(programmableEventType, new ProgrammableActionType[1] { programmableActionType });
-            AddLineBetweenSelectedConnectors();
+            AddLineBetweenSelectedConnectors(programmableEventType, programmableActionType);
         }
 
         currentActionConnector = null;
         currentEventConnector = null;
-
-        //foreach (KeyValuePair<ProgrammableEventType, ProgrammableActionType[]> item in localObject1EventsActions)
-        //{
-        //    Debug.Log("---- Event : " + item.Key.ToString() + " ----");
-        //    for (int i = 0; i < item.Value.Length; i++)
-        //    {
-        //        Debug.Log(item.Value[i]);
-        //    }
-        //}
     }
 
-    private void AddLineBetweenSelectedConnectors()
+    private void AddLineBetweenSelectedConnectors(ProgrammableEventType programmableEventType, ProgrammableActionType programmableActionType)
     {
-
-        ProgrammableEventType programmableEventType = eventConnectors[currentEventConnector];
-        ProgrammableActionType programmableActionType = actionConnectors[currentActionConnector];
-
         Vector3[] lineVertices = new Vector3[4]
         {
             currentEventConnector.transform.position - new Vector3(0, 0, 90),
@@ -233,6 +241,45 @@ public class DeveloperController : MonoBehaviour
 
         newLineRenderer.positionCount = 4;
         newLineRenderer.SetPositions(lineVertices);
+    }
+
+    public void SetCurrentEventsActions_ProgrammableObject1()
+    {
+        currentEventsActions = localObject1EventsActions;
+        ReConnectOldConncections();
+    }
+    public void SetCurrentEventsActions_ProgrammableObject2()
+    {
+        currentEventsActions = localObject2EventsActions;
+        ReConnectOldConncections();
+    }
+    public void SetCurrentEventsActions_ProgrammableEnemy() 
+    {
+        currentEventsActions = localEnemyEventsActions;
+        ReConnectOldConncections();
+    }
+
+    private void ReConnectOldConncections()
+    {
+        foreach (KeyValuePair<(ProgrammableEventType, ProgrammableActionType), GameObject> keyValuePair in connectionTypeToLineRenderer)
+        {
+            Destroy(keyValuePair.Value);
+        }
+        connectionTypeToLineRenderer.Clear();
+
+        foreach (KeyValuePair<ProgrammableEventType, ProgrammableActionType[]> keyValuePair in currentEventsActions)
+        {
+            foreach (ProgrammableActionType actionType in keyValuePair.Value)
+            {
+                currentEventConnector = eventConnectorButtons[keyValuePair.Key];
+                currentActionConnector = actionConnectorButtons[actionType];
+
+                AddLineBetweenSelectedConnectors(keyValuePair.Key, actionType);
+            }
+        }
+
+        currentEventConnector = null;
+        currentActionConnector = null;
     }
 
     public void DeveloperTurnEnd()
