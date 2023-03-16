@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class PixelBrushController : MonoBehaviour 
@@ -62,10 +63,10 @@ public class PixelBrushController : MonoBehaviour
             });
         }
 
+        selectedColor = selectableColors[0];
         SetBrushColor(selectableColors[0]);
         
         canvas.localScale = new Vector3(canvasSize / 2 - 0.5f, canvasSize / 2 - 0.5f, 1);
-        //if (canvasSize % 2 == 0) { gridOffset = -.5f; }
     }
 
     public void ClearCanvas()
@@ -87,15 +88,31 @@ public class PixelBrushController : MonoBehaviour
 
     private void Start()
     {
-        GameManager.InputManager.controls.Default.Paint.started += _ => currentBrushMode = BrushMode.Painting;
-        GameManager.InputManager.controls.Default.Paint.canceled += _ => currentBrushMode = BrushMode.None;
+        GameManager.InputManager.controls.Default.Paint.started += SetBrushModePainting;
+        GameManager.InputManager.controls.Default.Paint.canceled += SetBrushModeNone;
 
-        GameManager.InputManager.controls.Default.Erase.started += _ => currentBrushMode = BrushMode.Erasing;
-        GameManager.InputManager.controls.Default.Erase.canceled += _ => currentBrushMode = BrushMode.None;
+        GameManager.InputManager.controls.Default.Erase.started += SetBrushModeErasing;
+        GameManager.InputManager.controls.Default.Erase.canceled += SetBrushModeNone;
 
-        GameManager.InputManager.controls.Default.CursorMovement.performed += 
-            ctx => CursorMovement(ctx.ReadValue<Vector2>());
+        GameManager.InputManager.controls.Default.CursorMovement.performed += CursorMovement;
     }
+
+    private void OnDisable()
+    {
+        GameManager.InputManager.controls.Default.Paint.started -= SetBrushModePainting;
+        GameManager.InputManager.controls.Default.Paint.canceled -= SetBrushModeNone;
+
+        GameManager.InputManager.controls.Default.Erase.started -= SetBrushModeErasing;
+        GameManager.InputManager.controls.Default.Erase.canceled -= SetBrushModeNone;
+
+        GameManager.InputManager.controls.Default.CursorMovement.performed -= CursorMovement;
+    }
+
+
+    private void SetBrushModePainting(InputAction.CallbackContext callbackContext) => currentBrushMode = BrushMode.Painting;
+    private void SetBrushModeNone(InputAction.CallbackContext callbackContext) => currentBrushMode = BrushMode.None;
+    private void SetBrushModeErasing(InputAction.CallbackContext callbackContext) => currentBrushMode = BrushMode.Erasing;
+
 
     private void Update()
     {
@@ -106,8 +123,9 @@ public class PixelBrushController : MonoBehaviour
         }
     }
 
-    private void CursorMovement(Vector2 mousePosition)
+    private void CursorMovement(InputAction.CallbackContext callbackContext)
     {
+        Vector2 mousePosition = callbackContext.ReadValue<Vector2>();
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(mousePosition);
         mousePos = SnapPositionToGrid(mousePos);
         transform.position = mousePos;

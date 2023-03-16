@@ -8,9 +8,9 @@ public class TabGroup : MonoBehaviour
     [SerializeField] private TabSelectorButton selectedTab;
 
     [Header("Tab States")]
-    [SerializeField] private Sprite tabIdle;
-    [SerializeField] private Sprite tabHover;
-    [SerializeField] private Sprite tabActive;
+    [SerializeField] private Color tabIdleColor;
+    [SerializeField] private Color tabHoverColor;
+    [SerializeField] private Color tabActiveColor;
 
     private List<TabSelectorButton> tabButtons;
 
@@ -35,7 +35,7 @@ public class TabGroup : MonoBehaviour
 
         if (tabButton == selectedTab) { return; }
 
-        tabButton.background.sprite = tabHover;
+        tabButton.background.color = tabHoverColor;
     }
 
     public void OnTabExit()
@@ -55,7 +55,7 @@ public class TabGroup : MonoBehaviour
         selectedTab.Select();
 
         ResetTabs();
-        tabButton.background.sprite = tabActive;
+        tabButton.background.color = tabActiveColor;
     }
 
     public void ResetTabs()
@@ -65,7 +65,7 @@ public class TabGroup : MonoBehaviour
         foreach (TabSelectorButton tabButton in tabButtons)
         {
             if (tabButton == selectedTab) { continue; }
-            tabButton.background.sprite = tabIdle;
+            tabButton.background.color = tabHoverColor;
         }
     }
 }

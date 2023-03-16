@@ -1,10 +1,10 @@
 ﻿// Based On tutorial by Game Dev Guide https://www.youtube.com/watch?v=211t6r12XPQ&t=64s
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using Unity.VectorGraphics;
 
-[RequireComponent(typeof(Image))]
+[RequireComponent(typeof(SVGImage))]
 public class TabSelectorButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("References")]
@@ -14,11 +14,11 @@ public class TabSelectorButton : MonoBehaviour, IPointerClickHandler, IPointerEn
     [SerializeField] private UnityEvent onTabSelected;
     [SerializeField] private UnityEvent onTabDeselected;
 
-    [HideInInspector] public Image background;
+    [HideInInspector] public SVGImage background;
 
     private void Awake()
     {
-        background = GetComponent<Image>();
+        background = GetComponent<SVGImage>();
         tabGroup.Subscribe(this);
     }
 

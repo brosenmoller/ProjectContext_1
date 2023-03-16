@@ -36,12 +36,15 @@ public class PlatformerMovement : MonoBehaviour
     private float currentJumpVelocity;
 
     private float movement;
+    private float lastMovement;
 
     private Rigidbody2D rb;
+    private PlayTestController playTestController;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playTestController = FindObjectOfType<PlayTestController>();
     }
 
     private void Start()
@@ -109,14 +112,25 @@ public class PlatformerMovement : MonoBehaviour
 
     private void Flip(float movementX)
     {
+        if (movementX == 0 && lastMovement != 0)
+        {
+            playTestController.OnPlayerStop();
+        }
+
+        if (movementX != 0 && lastMovement == 0) 
+        {
+            playTestController.OnPlayerWalk();
+        }
+
         if (movementX == 1)
         {
-            characterHolder.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+            characterHolder.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         else if (movementX == -1)
         {
-            characterHolder.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+            characterHolder.transform.rotation = Quaternion.Euler(0, 180, 0);
         }
+        lastMovement = movementX;
     }
 
     private void FixedUpdate()
@@ -151,6 +165,7 @@ public class PlatformerMovement : MonoBehaviour
     private void Jump(float jumpVelocity)
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpVelocity);
+        playTestController.OnPlayerJump();
 
         jumpTimer = 0;
         groundTimer = 0;
