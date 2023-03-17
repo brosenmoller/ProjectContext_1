@@ -1,10 +1,8 @@
 using Cinemachine;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.SearchService;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static UnityEditor.Searcher.Searcher.AnalyticsEvent;
 
 public class PlayTestController : MonoBehaviour
 {
@@ -27,10 +25,6 @@ public class PlayTestController : MonoBehaviour
 
     private List<ProgrammableObject> programmableObjects = new();
 
-    private Timer halfSecondTimer;
-    private Timer threeSecondTimer;
-    private Timer tenSecondTimer;
-
     private void Awake()
     {
         programmableObjects.Clear();
@@ -39,29 +33,52 @@ public class PlayTestController : MonoBehaviour
 
     private void Start()
     {
-        halfSecondTimer = new Timer(.5f, () =>
-        {
-            foreach (ProgrammableObject obj in programmableObjects)
-            {
-                obj.InvokeEvent(ProgrammableEventType.EVERY_HALF_SECOND);
-            }
-        }, true, true);
+        StartCoroutine(TimerEvents());
+    }
 
-        threeSecondTimer = new Timer(3f, () =>
-        {
-            foreach (ProgrammableObject obj in programmableObjects)
-            {
-                obj.InvokeEvent(ProgrammableEventType.EVERY_3_SECONDS);
-            }
-        }, true, true);
+    private IEnumerator TimerEvents()
+    {
+        int halfSecondCounter = 0;
 
-        tenSecondTimer = new Timer(10f, () =>
+        while (true)
         {
-            foreach (ProgrammableObject obj in programmableObjects)
+            yield return new WaitForSeconds(.5f);
+            halfSecondCounter++;
+            EveryHalfSecond();
+            if (halfSecondCounter == 6 || halfSecondCounter == 12 || halfSecondCounter == 18)
             {
-                obj.InvokeEvent(ProgrammableEventType.EVERY_10_SECONDS);
+                EveryThreeSeconds();
             }
-        }, true, true);
+            else if (halfSecondCounter == 20)
+            {
+                EveryTenSeconds();
+                halfSecondCounter = 0;
+            }
+        }
+    }
+
+    private void EveryHalfSecond()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.EVERY_HALF_SECOND);
+        }
+    }
+
+    private void EveryThreeSeconds()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.EVERY_3_SECONDS);
+        }
+    }
+
+    private void EveryTenSeconds()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.EVERY_10_SECONDS);
+        }
     }
 
     public void OnPlayerWalk()
@@ -89,9 +106,7 @@ public class PlayTestController : MonoBehaviour
 
     private void OnDisable()
     {
-        halfSecondTimer.Pause();
-        threeSecondTimer.Pause();
-        tenSecondTimer.Pause();
+        StopAllCoroutines();
     }
 
     private void SetupField()

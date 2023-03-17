@@ -16,26 +16,28 @@ public class GameManager : MonoBehaviour
 
     public GameData GameData { get; private set; }
 
-    private readonly int[] GameFlowSceneIndexArray = new int[]
+    public TurnData CurrentTurnData { get { return GameFlowSceneIndexArray[currentGameFlowFase]; } }
+
+    private readonly TurnData[] GameFlowSceneIndexArray = new TurnData[]
     {
-        0, // Start Menu
-        1, // Select Theme
-        2, // Enter Names
+        new TurnData(0, 30f), // Start Menu
+        new TurnData(1, 30f), // Select Theme
+        new TurnData(2, 30f), // Enter Names
 
-        3, // First Development Turn
-        4, // First Artist Turn
-        5, // First Design Turn
-        6, // First PlayTest Turn
+        new TurnData(3, 30f, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Development Turn
+        new TurnData(4, 30f, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Artist Turn
+        new TurnData(5, 30f, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Design Turn
+        new TurnData(6, 30f, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First PlayTest Turn
 
-        3, // Second Development Turn
-        4, // Second Artist Turn
-        5, // Second Design Turn
-        6, // Second PlayTest Turn
-
-        3, // Third Development Turn
-        4, // Third Artist Turn
-        5, // Third Design Turn
-        6, // Third PlayTest Turn
+        new TurnData(3, 30f, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Development Turn
+        new TurnData(4, 30f, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Artist Turn
+        new TurnData(5, 30f, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Design Turn
+        new TurnData(6, 30f, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second PlayTest Turn
+       
+        new TurnData(3, 30f, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Development Turn
+        new TurnData(4, 30f, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Artist Turn
+        new TurnData(5, 30f, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Design Turn
+        new TurnData(6, 30f, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third PlayTest Turn
     };
 
     private int currentGameFlowFase = 0;
@@ -114,7 +116,7 @@ public class GameManager : MonoBehaviour
         currentGameFlowFase++;
         if (currentGameFlowFase < GameFlowSceneIndexArray.Length)
         {
-            SceneManager.LoadScene(GameFlowSceneIndexArray[currentGameFlowFase]);
+            SceneManager.LoadScene(GameFlowSceneIndexArray[currentGameFlowFase].sceneIndex);
         }
     }
 
@@ -138,6 +140,9 @@ public class GameManager : MonoBehaviour
     public void SetFinishSprite(Sprite sprite) => GameData.finishSprite = sprite;
     public void SetProgrammableObject1Sprite(Sprite sprite) => GameData.programmableObject1Sprite = sprite;
     public void SetProgrammableObject2Sprite(Sprite sprite) => GameData.programmableObject2Sprite = sprite;
+
+    public void SetProgrammableObject1SpriteType(ProgrammableObjectSpriteTypeReference spriteType) => GameData.programmableObject1SpriteType = spriteType;
+    public void SetProgrammableObject2SpriteType(ProgrammableObjectSpriteTypeReference spriteType) => GameData.programmableObject2SpriteType = spriteType;
 
     public void SetProgrammableObject1EventsActions
     (

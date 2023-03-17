@@ -15,6 +15,9 @@ public class GameData
     public Sprite programmableObject2Sprite;
     public Sprite finishSprite;
 
+    public ProgrammableObjectSpriteTypeReference programmableObject1SpriteType = null;
+    public ProgrammableObjectSpriteTypeReference programmableObject2SpriteType = null;
+
     public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableEnemyEventsActions;
     public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableObject1EventsActions;
     public Dictionary<ProgrammableEventType, ProgrammableActionType[]> programmableObject2EventsActions;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -94,6 +95,18 @@ public class DeveloperController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameObject lineRendererPrefab;
+    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private Color defaultConnectorColor;
+    [SerializeField] private Color selectedConnectorColor;
+
+    [Header("Lock References")]
+    [SerializeField] private GameObject lockProgrammableObject1;
+    [SerializeField] private GameObject lockProgrammableEnemy;
+    [SerializeField] private GameObject lockProgrammableObject2;
+    [Space(6)]
+    [SerializeField] private GameObject programmableObject1UI;
+    [SerializeField] private GameObject programmableEnemyUI;
+    [SerializeField] private GameObject programmableObject2UI;
     
     [Header("Settings")]
     [SerializeField] private float bezierCurveInset;
@@ -114,6 +127,8 @@ public class DeveloperController : MonoBehaviour
 
     private Button currentEventConnector = null;
     private Button currentActionConnector = null;
+
+    private float timer;
 
     private Dictionary<(ProgrammableEventType, ProgrammableActionType), GameObject> connectionTypeToLineRenderer = new();
 
@@ -141,7 +156,49 @@ public class DeveloperController : MonoBehaviour
             localObject2EventsActions = GameManager.Instance.GameData.programmableObject2EventsActions :
             localObject2EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
 
-        SetCurrentEventsActions_ProgrammableObject1();
+        ApplyDeveloperLocks();
+    }
+
+    private void Update()
+    {
+        if (timer >= GameManager.Instance.CurrentTurnData.timer)
+        {
+            DeveloperTurnEnd();
+        }
+        else
+        {
+            timer += Time.deltaTime;
+            timerText.text = ((int)GameManager.Instance.CurrentTurnData.timer - (int)timer).ToString();
+        }
+    }
+
+    private void ApplyDeveloperLocks()
+    {
+        lockProgrammableObject1.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject1Unlocked);
+        lockProgrammableEnemy.SetActive(!GameManager.Instance.CurrentTurnData.programmableEnemyUnlocked);
+        lockProgrammableObject2.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject2Unlocked);
+
+        switch (GameManager.Instance.CurrentTurnData.startingDeveloperTab)
+        {
+            case DeveloperTabs.ProgrammableObject1:
+                SetCurrentEventsActions_ProgrammableObject1();
+                programmableObject1UI.SetActive(true);
+                programmableEnemyUI.SetActive(false);
+                programmableObject2UI.SetActive(false);
+                break;
+            case DeveloperTabs.ProgrammableEnemy:
+                SetCurrentEventsActions_ProgrammableEnemy();
+                programmableObject1UI.SetActive(false);
+                programmableEnemyUI.SetActive(true);
+                programmableObject2UI.SetActive(false);
+                break;
+            case DeveloperTabs.ProgrammableObject2:
+                SetCurrentEventsActions_ProgrammableObject2();
+                programmableObject1UI.SetActive(false);
+                programmableEnemyUI.SetActive(false);
+                programmableObject2UI.SetActive(true);
+                break;
+        }
     }
 
     public void SetCurrentEventConnector(Button button)
@@ -149,9 +206,11 @@ public class DeveloperController : MonoBehaviour
         if (currentEventConnector != button)
         {
             currentEventConnector = button;
+            currentEventConnector.GetComponent<Image>().color = selectedConnectorColor;
         }
         else
         {
+            currentEventConnector.GetComponent<Image>().color = defaultConnectorColor;
             currentEventConnector = null;
         }
 
@@ -166,9 +225,11 @@ public class DeveloperController : MonoBehaviour
         if (currentActionConnector != button)
         {
             currentActionConnector = button;
+            currentActionConnector.GetComponent<Image>().color = selectedConnectorColor;
         }
         else
         {
+            currentActionConnector.GetComponent<Image>().color = defaultConnectorColor;
             currentActionConnector = null;
         }
 
@@ -180,6 +241,9 @@ public class DeveloperController : MonoBehaviour
 
     private void ConnectEventToAction()
     {
+        currentActionConnector.GetComponent<Image>().color = defaultConnectorColor;
+        currentEventConnector.GetComponent<Image>().color = defaultConnectorColor;
+
         ProgrammableEventType programmableEventType = eventConnectors[currentEventConnector];
         ProgrammableActionType programmableActionType = actionConnectors[currentActionConnector];
 
@@ -280,6 +344,17 @@ public class DeveloperController : MonoBehaviour
 
         currentEventConnector = null;
         currentActionConnector = null;
+    }
+
+    public void ClearAllLines()
+    {
+        foreach (KeyValuePair<(ProgrammableEventType, ProgrammableActionType), GameObject> keyValuePair in connectionTypeToLineRenderer)
+        {
+            Destroy(keyValuePair.Value);
+        }
+        connectionTypeToLineRenderer.Clear();
+
+        currentEventsActions.Clear();
     }
 
     public void DeveloperTurnEnd()
