@@ -13,8 +13,12 @@ public class TileBrushController : MonoBehaviour
     [SerializeField] private Grid grid;
 
     [Header("Tiles")]
-    [SerializeField] private TileBase groundTileVariation1;
-    [SerializeField] private TileBase groundTileVariation2;
+    [SerializeField] private RuleTile mainFuturisticTile;
+    [SerializeField] private RuleTile secondaryFuturisticTile;
+    [SerializeField] private RuleTile mainCastleTile;
+    [SerializeField] private RuleTile secondaryCastleTile;
+    [SerializeField] private RuleTile mainForestTile;
+    [SerializeField] private RuleTile secondaryForestTile;
     [SerializeField] private GameObject emptySpriteRenderer;
 
     [Header("References")]
@@ -22,6 +26,9 @@ public class TileBrushController : MonoBehaviour
     [SerializeField] private DesignController designController;
 
     private GridCellContent selectedCellContent;
+
+    private TileBase groundTileVariation1;
+    private TileBase groundTileVariation2;
 
     private enum BrushMode { Painting, Erasing, None }
     private BrushMode currentBrushMode = BrushMode.None;
@@ -34,6 +41,22 @@ public class TileBrushController : MonoBehaviour
         occupiedLocations.Clear();
         locationsOfNonTilemapPrefabs.Clear();
         selectedCellContent = GridCellContent.GroundTileVariation1;
+
+        switch (GameManager.Instance.GameData.gameTheme)
+        {
+            case GameTheme.SciFi:
+                groundTileVariation1 = mainFuturisticTile;
+                groundTileVariation2 = secondaryFuturisticTile;
+                break;
+            case GameTheme.Castle:
+                groundTileVariation1 = mainCastleTile;
+                groundTileVariation2 = secondaryCastleTile;
+                break;
+            case GameTheme.Forest:
+                groundTileVariation1 = mainForestTile;
+                groundTileVariation2 = secondaryForestTile;
+                break;
+        }
     }
 
     public void ClearTilemap()

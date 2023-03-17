@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -39,8 +40,24 @@ public class ArtistController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private PixelBrushController brushController;
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private RectTransform spriteTypeOptions;
     [SerializeField] private GameObject artChose;
+
+    [Header("Lock References")]
+    [SerializeField] private GameObject lockPlayerDraw;
+    [SerializeField] private GameObject lockEnemyDraw;
+    [SerializeField] private GameObject lockFinishraw;
+    [Space(6)]
+    [SerializeField] private GameObject playerDrawUI;
+    [SerializeField] private GameObject enemyDrawUI;
+    [SerializeField] private GameObject finishDrawUI;
+    [Space(12)]
+    [SerializeField] private GameObject lockProgrammableObject1ArtChose;
+    [SerializeField] private GameObject lockProgrammableObject2ArtChose;
+    [Space(6)]
+    [SerializeField] private GameObject programmableObject1ArtChoseUI;
+    [SerializeField] private GameObject programmableObject2ArtChoseUI;
 
     [Header("RectTransform to SpriteType")]
     [SerializeField] private SerializableDictionary<RectTransform, ProgrammableObjectSpriteType> buttonToSpriteType = new();
@@ -57,6 +74,21 @@ public class ArtistController : MonoBehaviour
     private ProgrammableObjectSpriteTypeReference currentProgrammableObjectSpriteType;
 
     private Outline currentSelectionOutline;
+    private ArtDrawTabs currentArtDrawTab;
+
+    private float timer;
+    private void Update()
+    {
+        if (timer >= GameManager.Instance.CurrentTurnData.timer)
+        {
+            OnArtistTurnEnd();
+        }
+        else
+        {
+            timer += Time.deltaTime;
+            timerText.text = ((int)GameManager.Instance.CurrentTurnData.timer - (int)timer).ToString();
+        }
+    }
 
     private void Start()
     {
@@ -67,6 +99,57 @@ public class ArtistController : MonoBehaviour
 
         AssignSpriteTypes();
         AssignPixelGrids();
+        ApplyArtLocks();
+    }
+
+    private void ApplyArtLocks()
+    {
+        lockPlayerDraw.SetActive(!GameManager.Instance.CurrentTurnData.playerDrawUnlocked);
+        lockEnemyDraw.SetActive(!GameManager.Instance.CurrentTurnData.programmableEnemyUnlocked);
+        lockFinishraw.SetActive(!GameManager.Instance.CurrentTurnData.finishDrawUnlocked);
+
+        switch (GameManager.Instance.CurrentTurnData.startingArtDrawTab)
+        {
+            case ArtDrawTabs.Player:
+                SetPlayerDraw();
+                playerDrawUI.SetActive(true);
+                enemyDrawUI.SetActive(false);
+                finishDrawUI.SetActive(false);
+                currentArtDrawTab = ArtDrawTabs.Player;
+                break;
+            case ArtDrawTabs.Enemy:
+                SetEnemyDraw();
+                playerDrawUI.SetActive(false);
+                enemyDrawUI.SetActive(true);
+                finishDrawUI.SetActive(false);
+                currentArtDrawTab = ArtDrawTabs.Enemy;
+                break;
+            case ArtDrawTabs.Finish:
+                SetFinishDraw();
+                playerDrawUI.SetActive(false);
+                enemyDrawUI.SetActive(false);
+                finishDrawUI.SetActive(true);
+                currentArtDrawTab = ArtDrawTabs.Finish;
+                break;
+        }
+
+        if (GameManager.Instance.CurrentTurnData.artChoseStart) { EnableArtChose(); }
+        else { DisableArtChose(); }
+
+        lockProgrammableObject1ArtChose.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject1Unlocked);
+        lockProgrammableObject2ArtChose.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject2Unlocked);
+
+        switch (GameManager.Instance.CurrentTurnData.startingArtChoseTab)
+        {
+            case ArtChoseTabs.ProgrammableObject1:
+                programmableObject1ArtChoseUI.SetActive(true);
+                programmableObject2ArtChoseUI.SetActive(false);
+                break;
+            case ArtChoseTabs.ProgrammableObject2:
+                programmableObject1ArtChoseUI.SetActive(false);
+                programmableObject2ArtChoseUI.SetActive(true);
+                break;
+        }
     }
 
     public void EnableArtChose()
@@ -78,7 +161,19 @@ public class ArtistController : MonoBehaviour
     public void DisableArtChose()
     {
         artChose.SetActive(false);
-        brushController.canDraw = true;
+
+        switch (currentArtDrawTab)
+        {
+            case ArtDrawTabs.Player:
+                brushController.canDraw = GameManager.Instance.CurrentTurnData.playerDrawUnlocked;
+                break;
+            case ArtDrawTabs.Enemy:
+                brushController.canDraw = GameManager.Instance.CurrentTurnData.programmableEnemyUnlocked;
+                break;
+            case ArtDrawTabs.Finish:
+                brushController.canDraw = GameManager.Instance.CurrentTurnData.finishDrawUnlocked;
+                break;
+        }
     }
 
     private void AssignSpriteTypes()
@@ -88,8 +183,6 @@ public class ArtistController : MonoBehaviour
 
         programmableObject2SpriteType = GameManager.Instance.GameData.programmableObject2SpriteType ?? 
             new ProgrammableObjectSpriteTypeReference(ProgrammableObjectSpriteType.BuzzSaw);
-
-        SetChoseObject1();
 
         foreach (RectTransform child in spriteTypeOptions)
         {
@@ -117,22 +210,26 @@ public class ArtistController : MonoBehaviour
         finishPixelGrid = GameManager.Instance.GameData.finishSprite == null ?
             GetEmptyPixelGrid() :
             GetColorArrayFromSprite(GameManager.Instance.GameData.finishSprite);
-
-        SetPlayerDraw();
     }
     public void SetPlayerDraw()
     {
         brushController.SetPixelGrid(playerPixelGrid);
+        brushController.canDraw = GameManager.Instance.CurrentTurnData.playerDrawUnlocked;
+        currentArtDrawTab = ArtDrawTabs.Player;
     }
 
     public void SetEnemyDraw()
     {
         brushController.SetPixelGrid(enemyPixelGrid);
+        brushController.canDraw = GameManager.Instance.CurrentTurnData.programmableEnemyUnlocked;
+        currentArtDrawTab = ArtDrawTabs.Enemy;
     }
 
     public void SetFinishDraw()
     {
         brushController.SetPixelGrid(finishPixelGrid);
+        brushController.canDraw = GameManager.Instance.CurrentTurnData.finishDrawUnlocked;
+        currentArtDrawTab = ArtDrawTabs.Finish;
     }
 
     public void SetChoseObject1()

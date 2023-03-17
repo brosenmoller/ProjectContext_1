@@ -1,5 +1,6 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using TMPro;
 
 public enum GridCellContent
 {
@@ -19,7 +20,9 @@ public class DesignController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private LineRenderer borderLine;
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TileBrushController tileBrushController;
+    [SerializeField] private SpriteRenderer background;
 
     [Header("UI Images")]
     [SerializeField] private Image playerButtonImage;
@@ -30,16 +33,27 @@ public class DesignController : MonoBehaviour
     [SerializeField] private Image mainGroundTileButtonImage;
     [SerializeField] private Image secondaryGroundTileButtonImage;
 
+    [Header("Lock References")]
+    [SerializeField] private GameObject lockProgrammableObject1;
+    [SerializeField] private GameObject lockProgrammableEnemy;
+    [SerializeField] private GameObject lockProgrammableObject2;
+    [SerializeField] private GameObject lockPlayer;
+    [SerializeField] private GameObject lockFinish;
+
     [Header("Themed Tiles")]
     [SerializeField] private Sprite mainFuturisticTile;
     [SerializeField] private Sprite secondaryFuturisticTile;
+    [SerializeField] private Sprite mainCastleTile;
+    [SerializeField] private Sprite secondaryCastleTile;
+    [SerializeField] private Sprite mainForestTile;
+    [SerializeField] private Sprite secondaryForestTile;
 
-    [Header("Testing (TEMPORARY)")]
-    [SerializeField] private Sprite testPlayerSprite;
-    [SerializeField] private Sprite testEnemySprite;
-    [SerializeField] private Sprite testProgrammable1Sprite;
-    [SerializeField] private Sprite testProgrammable2Sprite;
-    [SerializeField] private Sprite testFinishSprite;
+    [Header("Themed Backgrounds")]
+    [SerializeField] private Sprite futuristicBackground;
+    [SerializeField] private Sprite castleBackground;
+    [SerializeField] private Sprite forestBackground;
+
+    private float timer;
 
     private void Awake()
     {
@@ -48,20 +62,65 @@ public class DesignController : MonoBehaviour
 
     private void Start()
     {
-        //GameManager.Instance.SetPlayerSprite(testPlayerSprite);
-        GameManager.Instance.SetEnemySprite(testEnemySprite);
-        GameManager.Instance.SetProgrammableObject1Sprite(testProgrammable1Sprite);
-        GameManager.Instance.SetProgrammableObject2Sprite(testProgrammable2Sprite);
-        GameManager.Instance.SetFinishSprite(testFinishSprite);
+        if (GameManager.Instance.GameData.playerSprite != null) 
+        { playerButtonImage.sprite = GameManager.Instance.GameData.playerSprite; }
+        
+        if (GameManager.Instance.GameData.finishSprite != null) 
+        { finishButtonImage.sprite = GameManager.Instance.GameData.playerSprite; }
+        
+        if (GameManager.Instance.GameData.programmableObject1SpriteType != null) 
+        { programmable1ButtonImage.sprite = GameManager.Instance.GameData.playerSprite; }
+        
+        if (GameManager.Instance.GameData.programmableObject2SpriteType != null) 
+        { programmable2ButtonImage.sprite = GameManager.Instance.GameData.playerSprite; }
+        
+        if (GameManager.Instance.GameData.programmableEnemySprite != null) 
+        { enemyButtonImage.sprite = GameManager.Instance.GameData.programmableEnemySprite; }
 
-        playerButtonImage.sprite = GameManager.Instance.GameData.playerSprite;
-        enemyButtonImage.sprite = testEnemySprite;
-        programmable1ButtonImage.sprite = testProgrammable1Sprite;
-        programmable2ButtonImage.sprite = testProgrammable2Sprite;
-        finishButtonImage.sprite = testFinishSprite;
+        switch (GameManager.Instance.GameData.gameTheme) 
+        {
+            case GameTheme.SciFi:
+                mainGroundTileButtonImage.sprite = mainFuturisticTile;
+                secondaryGroundTileButtonImage.sprite = secondaryFuturisticTile;
+                background.sprite = futuristicBackground;
+                break;
+            case GameTheme.Castle:
+                mainGroundTileButtonImage.sprite = mainCastleTile;
+                secondaryGroundTileButtonImage.sprite = secondaryCastleTile;
+                background.sprite = castleBackground;
+                break;
+            case GameTheme.Forest:
+                mainGroundTileButtonImage.sprite = mainForestTile;
+                secondaryGroundTileButtonImage.sprite = secondaryForestTile;
+                background.sprite = forestBackground;
+                break;
+        }
 
-        mainGroundTileButtonImage.sprite = mainFuturisticTile;
-        secondaryGroundTileButtonImage.sprite = secondaryFuturisticTile;
+        
+        
+        ApplyDesignerLocks();
+    }
+
+    private void ApplyDesignerLocks()
+    {
+        lockProgrammableObject1.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject1Unlocked);
+        lockProgrammableEnemy.SetActive(!GameManager.Instance.CurrentTurnData.programmableEnemyUnlocked);
+        lockProgrammableObject2.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject2Unlocked);
+        lockPlayer.SetActive(!GameManager.Instance.CurrentTurnData.playerDrawUnlocked);
+        lockFinish.SetActive(!GameManager.Instance.CurrentTurnData.finishDrawUnlocked);
+    }
+
+    private void Update()
+    {
+        if (timer >= GameManager.Instance.CurrentTurnData.timer)
+        {
+            OnDesignTurnEnd();
+        }
+        else
+        {
+            timer += Time.deltaTime;
+            timerText.text = ((int)GameManager.Instance.CurrentTurnData.timer - (int)timer).ToString();
+        }
     }
 
     private void SetupBorder()

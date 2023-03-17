@@ -3937,8 +3937,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasSize: 16
   brushController: {fileID: 6533606}
+  timerText: {fileID: 1028388165}
   spriteTypeOptions: {fileID: 1030753391}
   artChose: {fileID: 593546058}
+  lockPlayerDraw: {fileID: 1176680573}
+  lockEnemyDraw: {fileID: 1846030661}
+  lockFinishraw: {fileID: 2137681482}
+  playerDrawUI: {fileID: 1401246391}
+  enemyDrawUI: {fileID: 1401815621}
+  finishDrawUI: {fileID: 1780561878}
+  lockProgrammableObject1ArtChose: {fileID: 1040996616}
+  lockProgrammableObject2ArtChose: {fileID: 15125614}
+  programmableObject1ArtChoseUI: {fileID: 826436726}
+  programmableObject2ArtChoseUI: {fileID: 366192912}
   buttonToSpriteType:
     pairs:
     - key: {fileID: 2985127011126637470}
