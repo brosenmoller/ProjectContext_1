@@ -25,7 +25,6 @@ public enum ProgrammableActionType
     PLAYER_PLUS_ONE_HP = 2,
     PLAYER_MINUS_ONE_HP = 3,
     OBJECT_MOVE_FORWARD = 4,
-    OBJECT_JUMP = 5,
     OBJECT_TURN_AROUND = 6,
     OBJECT_STOP_MOVING = 7,
     OBJECT_PAUSE_MOVING_3_SECONDS = 8,
@@ -35,64 +34,6 @@ public enum ProgrammableActionType
 
 public class DeveloperController : MonoBehaviour
 {
-    #region Bezier Curves By BastianUrbach
-    // https://answers.unity.com/questions/1835481/how-to-get-a-smooth-curved-line-between-two-points.html
-    Vector2 Bezier(Vector2 a, Vector2 b, float t)
-    {
-        return Vector2.Lerp(a, b, t);
-    }
-
-    Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t)
-    {
-        return Vector2.Lerp(Bezier(a, b, t), Bezier(b, c, t), t);
-    }
-
-    Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, Vector2 d, float t)
-    {
-        return Vector2.Lerp(Bezier(a, b, c, t), Bezier(b, c, d, t), t);
-    }
-    #endregion
-
-    #region SmoothCurve By CodeTastic
-    // https://answers.unity.com/questions/392606/line-drawing-how-can-i-interpolate-between-points.html
-
-    public static Vector3[] MakeSmoothCurve(Vector3[] arrayToCurve, int resolution)
-    {
-        List<Vector3> points;
-        List<Vector3> curvedPoints;
-        int pointsLength = 0;
-        int curvedLength = 0;
-
-        if (resolution < 1) resolution = 1;
-
-        pointsLength = arrayToCurve.Length;
-
-        curvedLength = (pointsLength * resolution) - 1;
-        curvedPoints = new List<Vector3>(curvedLength);
-
-        float t = 0.0f;
-        for (int pointInTimeOnCurve = 0; pointInTimeOnCurve < curvedLength + 1; pointInTimeOnCurve++)
-        {
-            t = Mathf.InverseLerp(0, curvedLength, pointInTimeOnCurve);
-
-            points = new List<Vector3>(arrayToCurve);
-
-            for (int j = pointsLength - 1; j > 0; j--)
-            {
-                for (int i = 0; i < j; i++)
-                {
-                    points[i] = (1 - t) * points[i] + t * points[i + 1];
-                }
-            }
-
-            curvedPoints.Add(points[0]);
-        }
-
-        return (curvedPoints.ToArray());
-    }
-
-    #endregion
-
     [Header("References")]
     [SerializeField] private GameObject lineRendererPrefab;
     [SerializeField] private TextMeshProUGUI timerText;
@@ -205,6 +146,7 @@ public class DeveloperController : MonoBehaviour
     {
         if (currentEventConnector != button)
         {
+            if (currentEventConnector != null) { currentEventConnector.GetComponent<Image>().color = defaultConnectorColor; }
             currentEventConnector = button;
             currentEventConnector.GetComponent<Image>().color = selectedConnectorColor;
         }
@@ -224,6 +166,7 @@ public class DeveloperController : MonoBehaviour
     {
         if (currentActionConnector != button)
         {
+            if (currentActionConnector != null) { currentActionConnector.GetComponent<Image>().color = defaultConnectorColor; }
             currentActionConnector = button;
             currentActionConnector.GetComponent<Image>().color = selectedConnectorColor;
         }

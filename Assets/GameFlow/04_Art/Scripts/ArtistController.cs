@@ -144,10 +144,12 @@ public class ArtistController : MonoBehaviour
             case ArtChoseTabs.ProgrammableObject1:
                 programmableObject1ArtChoseUI.SetActive(true);
                 programmableObject2ArtChoseUI.SetActive(false);
+                SetChoseObject1();
                 break;
             case ArtChoseTabs.ProgrammableObject2:
                 programmableObject1ArtChoseUI.SetActive(false);
                 programmableObject2ArtChoseUI.SetActive(true);
+                SetChoseObject2();
                 break;
         }
     }
@@ -188,13 +190,18 @@ public class ArtistController : MonoBehaviour
         {
             child.GetComponent<Button>().onClick.AddListener(() =>
             {
-                currentProgrammableObjectSpriteType.programmableObjectSpriteType = buttonToSpriteType[child];
-
-                if (currentSelectionOutline != null) { currentSelectionOutline.enabled = false; }
-                currentSelectionOutline = child.GetComponent<Outline>();
-                currentSelectionOutline.enabled = true;
+                SetProgrammableObjectSpriteType(buttonToSpriteType[child], child);
             });
         }
+    }
+
+    private void SetProgrammableObjectSpriteType(ProgrammableObjectSpriteType spriteType, RectTransform rectTransform)
+    {
+        currentProgrammableObjectSpriteType.programmableObjectSpriteType = spriteType;
+
+        if (currentSelectionOutline != null) { currentSelectionOutline.enabled = false; }
+        currentSelectionOutline = rectTransform.GetComponent<Outline>();
+        currentSelectionOutline.enabled = true;
     }
 
     private void AssignPixelGrids()
@@ -311,7 +318,7 @@ public class ArtistController : MonoBehaviour
         texture.filterMode = FilterMode.Point;
 
         Rect rect = new(0, 0, canvasSize, canvasSize);
-        return Sprite.Create(texture, rect, new Vector2(.5f, .5f), canvasSize / 2);
+        return Sprite.Create(texture, rect, new Vector2(.5f, .5f), canvasSize);
     }
 }
 

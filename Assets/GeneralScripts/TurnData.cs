@@ -19,6 +19,23 @@ public enum ArtChoseTabs
     ProgrammableObject2,
 }
 
+public enum RoomType
+{
+    Other,
+    Development,
+    Art,
+    Design,
+    PlayTest,
+}
+
+public enum Player
+{
+    Unassigned,
+    Player1,
+    Player2,
+    Player3,
+}
+
 public struct TurnData
 {
     public int sceneIndex;
@@ -36,11 +53,17 @@ public struct TurnData
     public ArtChoseTabs startingArtChoseTab;
 
     public bool artChoseStart;
+    public bool infinitePlayTest;
 
-    public TurnData(int sceneIndex, float timer, bool programmableObject1Unlocked = false, bool programmableObject2Unlocked = false, bool programmableEnemyUnlocked = false, bool playerDrawUnlocked = false, bool finishDrawUnlocked = false, bool artChoseStart = true, DeveloperTabs startingDeveloperTab = DeveloperTabs.ProgrammableObject1, ArtDrawTabs startingArtDrawTab = ArtDrawTabs.Player, ArtChoseTabs startingArtChoseTab = ArtChoseTabs.ProgrammableObject1)
+    public RoomType roomType;
+    public Player player;
+
+    public TurnData(int sceneIndex, float timer, RoomType roomType, Player player, bool programmableObject1Unlocked = false, bool programmableObject2Unlocked = false, bool programmableEnemyUnlocked = false, bool playerDrawUnlocked = false, bool finishDrawUnlocked = false, bool artChoseStart = true, DeveloperTabs startingDeveloperTab = DeveloperTabs.ProgrammableObject1, ArtDrawTabs startingArtDrawTab = ArtDrawTabs.Player, ArtChoseTabs startingArtChoseTab = ArtChoseTabs.ProgrammableObject1, bool infinitePlayTest = false)
     {
         this.sceneIndex = sceneIndex;
         this.timer = timer;
+        this.roomType = roomType;
+        this.player = player;
         this.programmableObject1Unlocked = programmableObject1Unlocked;
         this.programmableObject2Unlocked = programmableObject2Unlocked;
         this.programmableEnemyUnlocked = programmableEnemyUnlocked;
@@ -50,6 +73,7 @@ public struct TurnData
         this.startingDeveloperTab = startingDeveloperTab;
         this.startingArtDrawTab = startingArtDrawTab;
         this.startingArtChoseTab = startingArtChoseTab;
+        this.infinitePlayTest = infinitePlayTest;
     }
 }
 

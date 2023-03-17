@@ -6,7 +6,7 @@ using UnityEngine.Tilemaps;
 
 public class TileBrushController : MonoBehaviour 
 {
-    public static Dictionary<Vector3Int, GridCellContent> occupiedLocations = new();
+    public Dictionary<Vector3Int, GridCellContent> occupiedLocations = new();
 
     [Header("Tilemap & Grid")]
     [SerializeField] private Tilemap groundTilemap;
@@ -59,6 +59,17 @@ public class TileBrushController : MonoBehaviour
         }
     }
 
+    public void ResetLevelLayoutToLastState()
+    {
+        if (GameManager.Instance.GameData.levelLayout == null) { return; }
+
+        foreach (KeyValuePair<Vector3Int, GridCellContent> keyValuePair in GameManager.Instance.GameData.levelLayout)
+        {
+            occupiedLocations.Add(keyValuePair.Key, keyValuePair.Value);
+            SetTile(keyValuePair.Key, keyValuePair.Value);
+        }
+    }
+
     public void ClearTilemap()
     {
         groundTilemap.ClearAllTiles();
@@ -66,6 +77,8 @@ public class TileBrushController : MonoBehaviour
 
     private void Start()
     {
+        ResetLevelLayoutToLastState();
+
         GameManager.InputManager.controls.Default.Paint.started += SetBrushModePainting;
         GameManager.InputManager.controls.Default.Paint.canceled += SetBrushModeNone;
 

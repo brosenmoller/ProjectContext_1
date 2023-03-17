@@ -139,7 +139,7 @@ MonoBehaviour:
   rigidBodyGravityScale: 4
   jumpDelay: 0.15
   groundDelay: 0.15
-  colliderWidth: {x: 0.49, y: 0, z: 0}
+  colliderWidth: {x: 0.43, y: 0, z: 0}
   colliderOffset: {x: 0, y: 0, z: 0}
   groundDistance: 0.55
   groundLayer:

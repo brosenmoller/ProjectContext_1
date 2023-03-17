@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayTestController : MonoBehaviour
 {
     [Header("Scene References")]
     [SerializeField] private Tilemap groundTilemap;
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private RectTransform hearts;
 
     [Header("Tilemap References")]
     [SerializeField] private TileBase futuristicGroundTile1;
@@ -23,17 +27,107 @@ public class PlayTestController : MonoBehaviour
     [SerializeField] private GameObject finishPrefab;
     [SerializeField] private GameObject programmableOjectPrefab;
 
+    [Header("Themed Backgrounds")]
+    [SerializeField] private GameObject futuristicBackground;
+    [SerializeField] private GameObject castleBackground;
+    [SerializeField] private GameObject forestBackground;
+
     private List<ProgrammableObject> programmableObjects = new();
+
+    private float timer = 0;
+    private const string timerSaveKey = "PlayTestTimer";
+
+    private int health = 3;
+    public int Health { 
+        get { return health; } 
+        set 
+        {
+            health = value;
+            if (health < 0)
+            {
+                ReloadScene();
+            }
+            else if (health == 3)
+            {
+                hearts.GetChild(0).gameObject.SetActive(true);
+                hearts.GetChild(1).gameObject.SetActive(true);
+                hearts.GetChild(2).gameObject.SetActive(true);
+            }
+            else if (health == 2)
+            {
+                hearts.GetChild(0).gameObject.SetActive(true);
+                hearts.GetChild(1).gameObject.SetActive(true);
+                hearts.GetChild(2).gameObject.SetActive(false);
+            }
+            else if (health == 1)
+            {
+                hearts.GetChild(0).gameObject.SetActive(true);
+                hearts.GetChild(1).gameObject.SetActive(false);
+                hearts.GetChild(2).gameObject.SetActive(false);
+            }
+        }
+    }
 
     private void Awake()
     {
+        timer = PlayerPrefs.GetFloat(timerSaveKey, 0);
         programmableObjects.Clear();
+        if (GameManager.Instance.CurrentTurnData.infinitePlayTest) { timerText.gameObject.SetActive(false); }
+        SetBackground();
         SetupField();
+    }
+
+    public void ReloadScene()
+    {
+        PlayerPrefs.SetFloat(timerSaveKey, timer);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void Start()
     {
         StartCoroutine(TimerEvents());
+    }
+
+    private void Update()
+    {
+        UpdateTimer();
+    }
+
+    private void UpdateTimer()
+    {
+        if (GameManager.Instance.CurrentTurnData.infinitePlayTest) { return; }
+
+        if (timer >= GameManager.Instance.CurrentTurnData.timer)
+        {
+            PlayTestTurnEnd();
+        }
+        else
+        {
+            timer += Time.deltaTime;
+            timerText.text = ((int)GameManager.Instance.CurrentTurnData.timer - (int)timer).ToString();
+        }
+    }
+
+    private void SetBackground()
+    {
+        switch (GameManager.Instance.GameData.gameTheme)
+        {
+            case GameTheme.SciFi:
+                futuristicBackground.SetActive(true);
+                forestBackground.SetActive(false);
+                castleBackground.SetActive(false);
+                break;
+            case GameTheme.Castle:
+                futuristicBackground.SetActive(false);
+                castleBackground.SetActive(true);
+                forestBackground.SetActive(false);
+                break;
+            case GameTheme.Forest:
+                futuristicBackground.SetActive(false);
+                castleBackground.SetActive(false);
+                forestBackground.SetActive(true);
+                break;
+        }
     }
 
     private IEnumerator TimerEvents()
@@ -173,8 +267,6 @@ public class PlayTestController : MonoBehaviour
             _ => futuristicGroundTile1,
         };
 
-        tile = futuristicGroundTile1;
-
         groundTilemap.SetTile(placementPosition, tile);
     }
 
@@ -188,13 +280,12 @@ public class PlayTestController : MonoBehaviour
             _ => futuristicGroundTile2,
         };
 
-        tile = futuristicGroundTile2;
-
         groundTilemap.SetTile(placementPosition, tile);
     }
 
     public void PlayTestTurnEnd()
     {
+        PlayerPrefs.SetFloat(timerSaveKey, 0);
         GameManager.Instance.NextTurn();
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ProgrammableObject : MonoBehaviour
 {
@@ -9,6 +8,7 @@ public class ProgrammableObject : MonoBehaviour
 
     private GameObject player;
     private PlatformerMovement playerMovement;
+    private PlayTestController playTestController;
     private Rigidbody2D playerRB;
     private Rigidbody2D rb;
 
@@ -18,27 +18,17 @@ public class ProgrammableObject : MonoBehaviour
 
     private bool movingVertical = false;
     private bool moveDown = false;
-    //private bool gravityEnabled = false;
-
-    //private float jumpTimer = 0;
 
     private void Start()
     {
         playerMovement = FindObjectOfType<PlatformerMovement>();
+        playTestController = FindObjectOfType<PlayTestController>();
         player = playerMovement.gameObject;
         playerRB = player.GetComponent<Rigidbody2D>();
         rb = GetComponent<Rigidbody2D>();
 
         InvokeEvent(ProgrammableEventType.ON_START);
     }
-
-    //private void EnableGravity()
-    //{
-    //    if (gravityEnabled) { return; }
-    //    GetComponent<Collider2D>().isTrigger = false;
-    //    rb.gravityScale = 4f;
-    //    gravityEnabled = true;
-    //}
 
     private void FixedUpdate()
     {
@@ -55,12 +45,6 @@ public class ProgrammableObject : MonoBehaviour
         }
 
         CheckPlayerInRange();
-
-        //if (GroundCheck() && jumpTimer < Time.time)
-        //{
-        //    rb.gravityScale = 0f;
-        //    rb.velocity = new Vector2(rb.velocity.x, 0);
-        //}
     }
 
     private void CheckPlayerInRange()
@@ -92,7 +76,7 @@ public class ProgrammableObject : MonoBehaviour
         {
             ProgrammableActionType.RELOAD_SCENE, (ProgrammableObject thisObject) =>
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                thisObject.playTestController.ReloadScene();
             }
         },
         {
@@ -104,28 +88,19 @@ public class ProgrammableObject : MonoBehaviour
         {
             ProgrammableActionType.PLAYER_PLUS_ONE_HP, (ProgrammableObject thisObject) =>
             {
-                // Give the Player plus one hp
+                thisObject.playTestController.Health++;
             }
         },
         {
             ProgrammableActionType.PLAYER_MINUS_ONE_HP, (ProgrammableObject thisObject) =>
             {
-                // Give the Player minus one hp
+                thisObject.playTestController.Health--;
             }
         },
         {
             ProgrammableActionType.OBJECT_MOVE_FORWARD, (ProgrammableObject thisObject) =>
             {
                 thisObject.movingForward = true;
-            }
-        },
-        {
-            ProgrammableActionType.OBJECT_JUMP, (ProgrammableObject thisObject) =>
-            {
-                //thisObject.rb.velocity = new Vector2(thisObject.rb.velocity.x, 18f);
-                //thisObject.EnableGravity();
-                ////thisObject.rb.gravityScale = 4f;
-                ////thisObject.jumpTimer = Time.time + .15f;
             }
         },
         {
@@ -175,6 +150,7 @@ public class ProgrammableObject : MonoBehaviour
     private void PauseForThreeSeconds()
     {
         movingForward = false;
+        rb.velocity = new Vector2(0, rb.velocity.y);
         Invoke(nameof(ResumeMoving), 3f);
     }
 
