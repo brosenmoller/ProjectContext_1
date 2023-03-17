@@ -1,5 +1,6 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using TMPro;
 
 public enum GridCellContent
 {
@@ -19,6 +20,7 @@ public class DesignController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private LineRenderer borderLine;
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TileBrushController tileBrushController;
 
     [Header("UI Images")]
@@ -30,16 +32,31 @@ public class DesignController : MonoBehaviour
     [SerializeField] private Image mainGroundTileButtonImage;
     [SerializeField] private Image secondaryGroundTileButtonImage;
 
+    [Header("Lock References")]
+    [SerializeField] private GameObject lockProgrammableObject1;
+    [SerializeField] private GameObject lockProgrammableEnemy;
+    [SerializeField] private GameObject lockProgrammableObject2;
+    [SerializeField] private GameObject lockPlayer;
+    [SerializeField] private GameObject lockFinish;
+
     [Header("Themed Tiles")]
     [SerializeField] private Sprite mainFuturisticTile;
     [SerializeField] private Sprite secondaryFuturisticTile;
+    [SerializeField] private Sprite mainCastleTile;
+    [SerializeField] private Sprite secondaryCastleTile;
+    [SerializeField] private Sprite mainForestTile;
+    [SerializeField] private Sprite secondaryForestTile;
 
-    [Header("Testing (TEMPORARY)")]
-    [SerializeField] private Sprite testPlayerSprite;
-    [SerializeField] private Sprite testEnemySprite;
-    [SerializeField] private Sprite testProgrammable1Sprite;
-    [SerializeField] private Sprite testProgrammable2Sprite;
-    [SerializeField] private Sprite testFinishSprite;
+    [Header("Themed Backgrounds")]
+    [SerializeField] private GameObject futuristicBackground;
+    [SerializeField] private GameObject castleBackground;
+    [SerializeField] private GameObject forestBackground;
+
+    [Header("Sprite From Sprite Type")]
+    [SerializeField] private SerializableDictionary<ProgrammableObjectSpriteType, Sprite> spriteFromSpriteType = new();
+
+    private float timer;
+    private bool hasEnded = false;
 
     private void Awake()
     {
@@ -48,20 +65,79 @@ public class DesignController : MonoBehaviour
 
     private void Start()
     {
-        //GameManager.Instance.SetPlayerSprite(testPlayerSprite);
-        GameManager.Instance.SetEnemySprite(testEnemySprite);
-        GameManager.Instance.SetProgrammableObject1Sprite(testProgrammable1Sprite);
-        GameManager.Instance.SetProgrammableObject2Sprite(testProgrammable2Sprite);
-        GameManager.Instance.SetFinishSprite(testFinishSprite);
+        SetThemedSprites();
+        ApplyDesignerLocks();
+    }
 
-        playerButtonImage.sprite = GameManager.Instance.GameData.playerSprite;
-        enemyButtonImage.sprite = testEnemySprite;
-        programmable1ButtonImage.sprite = testProgrammable1Sprite;
-        programmable2ButtonImage.sprite = testProgrammable2Sprite;
-        finishButtonImage.sprite = testFinishSprite;
+    private void SetThemedSprites()
+    {
+        if (GameManager.Instance.GameData.playerSprite != null)
+        { playerButtonImage.sprite = GameManager.Instance.GameData.playerSprite; }
 
-        mainGroundTileButtonImage.sprite = mainFuturisticTile;
-        secondaryGroundTileButtonImage.sprite = secondaryFuturisticTile;
+        if (GameManager.Instance.GameData.finishSprite != null)
+        { finishButtonImage.sprite = GameManager.Instance.GameData.finishSprite; }
+
+        if (GameManager.Instance.GameData.programmableObject1SpriteType != null)
+        {
+            GameManager.Instance.GameData.programmableObject1Sprite = spriteFromSpriteType[GameManager.Instance.GameData.programmableObject1SpriteType.programmableObjectSpriteType];
+            programmable1ButtonImage.sprite = spriteFromSpriteType[GameManager.Instance.GameData.programmableObject1SpriteType.programmableObjectSpriteType];
+        }
+
+        if (GameManager.Instance.GameData.programmableObject2SpriteType != null)
+        {
+            GameManager.Instance.GameData.programmableObject2Sprite = spriteFromSpriteType[GameManager.Instance.GameData.programmableObject2SpriteType.programmableObjectSpriteType];
+            programmable2ButtonImage.sprite = spriteFromSpriteType[GameManager.Instance.GameData.programmableObject2SpriteType.programmableObjectSpriteType];
+        }
+
+        if (GameManager.Instance.GameData.programmableEnemySprite != null)
+        { enemyButtonImage.sprite = GameManager.Instance.GameData.programmableEnemySprite; }
+
+        switch (GameManager.Instance.GameData.gameTheme)
+        {
+            case GameTheme.SciFi:
+                mainGroundTileButtonImage.sprite = mainFuturisticTile;
+                secondaryGroundTileButtonImage.sprite = secondaryFuturisticTile;
+                futuristicBackground.SetActive(true);
+                forestBackground.SetActive(false);
+                castleBackground.SetActive(false);
+                break;
+            case GameTheme.Castle:
+                mainGroundTileButtonImage.sprite = mainCastleTile;
+                secondaryGroundTileButtonImage.sprite = secondaryCastleTile;
+                futuristicBackground.SetActive(false);
+                castleBackground.SetActive(true);
+                forestBackground.SetActive(false);
+                break;
+            case GameTheme.Forest:
+                mainGroundTileButtonImage.sprite = mainForestTile;
+                secondaryGroundTileButtonImage.sprite = secondaryForestTile;
+                futuristicBackground.SetActive(false);
+                castleBackground.SetActive(false);
+                forestBackground.SetActive(true);
+                break;
+        }
+    }
+
+    private void ApplyDesignerLocks()
+    {
+        lockProgrammableObject1.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject1Unlocked);
+        lockProgrammableEnemy.SetActive(!GameManager.Instance.CurrentTurnData.programmableEnemyUnlocked);
+        lockProgrammableObject2.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject2Unlocked);
+        lockPlayer.SetActive(!GameManager.Instance.CurrentTurnData.playerDrawUnlocked);
+        lockFinish.SetActive(!GameManager.Instance.CurrentTurnData.finishDrawUnlocked);
+    } 
+
+    private void Update()
+    {
+        if (timer >= GameManager.Instance.CurrentTurnData.timer)
+        {
+            OnDesignTurnEnd();
+        }
+        else
+        {
+            timer += Time.deltaTime;
+            timerText.text = ((int)GameManager.Instance.CurrentTurnData.timer - (int)timer).ToString();
+        }
     }
 
     private void SetupBorder()
@@ -79,7 +155,9 @@ public class DesignController : MonoBehaviour
 
     public void OnDesignTurnEnd()
     {
-        GameManager.Instance.SetLevelLayout(TileBrushController.occupiedLocations);
+        if (hasEnded) { return; }
+        hasEnded = true;
+        GameManager.Instance.SetLevelLayout(tileBrushController.occupiedLocations);
         GameManager.Instance.NextTurn();
     }
 

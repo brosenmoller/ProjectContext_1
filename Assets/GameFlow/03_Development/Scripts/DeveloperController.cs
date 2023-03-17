@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,7 +25,6 @@ public enum ProgrammableActionType
     PLAYER_PLUS_ONE_HP = 2,
     PLAYER_MINUS_ONE_HP = 3,
     OBJECT_MOVE_FORWARD = 4,
-    OBJECT_JUMP = 5,
     OBJECT_TURN_AROUND = 6,
     OBJECT_STOP_MOVING = 7,
     OBJECT_PAUSE_MOVING_3_SECONDS = 8,
@@ -34,66 +34,20 @@ public enum ProgrammableActionType
 
 public class DeveloperController : MonoBehaviour
 {
-    #region Bezier Curves By BastianUrbach
-    // https://answers.unity.com/questions/1835481/how-to-get-a-smooth-curved-line-between-two-points.html
-    Vector2 Bezier(Vector2 a, Vector2 b, float t)
-    {
-        return Vector2.Lerp(a, b, t);
-    }
-
-    Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, float t)
-    {
-        return Vector2.Lerp(Bezier(a, b, t), Bezier(b, c, t), t);
-    }
-
-    Vector2 Bezier(Vector2 a, Vector2 b, Vector2 c, Vector2 d, float t)
-    {
-        return Vector2.Lerp(Bezier(a, b, c, t), Bezier(b, c, d, t), t);
-    }
-    #endregion
-
-    #region SmoothCurve By CodeTastic
-    // https://answers.unity.com/questions/392606/line-drawing-how-can-i-interpolate-between-points.html
-
-    public static Vector3[] MakeSmoothCurve(Vector3[] arrayToCurve, int resolution)
-    {
-        List<Vector3> points;
-        List<Vector3> curvedPoints;
-        int pointsLength = 0;
-        int curvedLength = 0;
-
-        if (resolution < 1) resolution = 1;
-
-        pointsLength = arrayToCurve.Length;
-
-        curvedLength = (pointsLength * resolution) - 1;
-        curvedPoints = new List<Vector3>(curvedLength);
-
-        float t = 0.0f;
-        for (int pointInTimeOnCurve = 0; pointInTimeOnCurve < curvedLength + 1; pointInTimeOnCurve++)
-        {
-            t = Mathf.InverseLerp(0, curvedLength, pointInTimeOnCurve);
-
-            points = new List<Vector3>(arrayToCurve);
-
-            for (int j = pointsLength - 1; j > 0; j--)
-            {
-                for (int i = 0; i < j; i++)
-                {
-                    points[i] = (1 - t) * points[i] + t * points[i + 1];
-                }
-            }
-
-            curvedPoints.Add(points[0]);
-        }
-
-        return (curvedPoints.ToArray());
-    }
-
-    #endregion
-
     [Header("References")]
     [SerializeField] private GameObject lineRendererPrefab;
+    [SerializeField] private TextMeshProUGUI timerText;
+    [SerializeField] private Color defaultConnectorColor;
+    [SerializeField] private Color selectedConnectorColor;
+
+    [Header("Lock References")]
+    [SerializeField] private GameObject lockProgrammableObject1;
+    [SerializeField] private GameObject lockProgrammableEnemy;
+    [SerializeField] private GameObject lockProgrammableObject2;
+    [Space(6)]
+    [SerializeField] private GameObject programmableObject1UI;
+    [SerializeField] private GameObject programmableEnemyUI;
+    [SerializeField] private GameObject programmableObject2UI;
     
     [Header("Settings")]
     [SerializeField] private float bezierCurveInset;
@@ -114,6 +68,9 @@ public class DeveloperController : MonoBehaviour
 
     private Button currentEventConnector = null;
     private Button currentActionConnector = null;
+
+    private float timer;
+    private bool hasEnded;
 
     private Dictionary<(ProgrammableEventType, ProgrammableActionType), GameObject> connectionTypeToLineRenderer = new();
 
@@ -141,17 +98,62 @@ public class DeveloperController : MonoBehaviour
             localObject2EventsActions = GameManager.Instance.GameData.programmableObject2EventsActions :
             localObject2EventsActions = new Dictionary<ProgrammableEventType, ProgrammableActionType[]>();
 
-        SetCurrentEventsActions_ProgrammableObject1();
+        ApplyDeveloperLocks();
+    }
+
+    private void Update()
+    {
+        if (timer >= GameManager.Instance.CurrentTurnData.timer)
+        {
+            DeveloperTurnEnd();
+        }
+        else
+        {
+            timer += Time.deltaTime;
+            timerText.text = ((int)GameManager.Instance.CurrentTurnData.timer - (int)timer).ToString();
+        }
+    }
+
+    private void ApplyDeveloperLocks()
+    {
+        lockProgrammableObject1.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject1Unlocked);
+        lockProgrammableEnemy.SetActive(!GameManager.Instance.CurrentTurnData.programmableEnemyUnlocked);
+        lockProgrammableObject2.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject2Unlocked);
+
+        switch (GameManager.Instance.CurrentTurnData.startingDeveloperTab)
+        {
+            case DeveloperTabs.ProgrammableObject1:
+                SetCurrentEventsActions_ProgrammableObject1();
+                programmableObject1UI.SetActive(true);
+                programmableEnemyUI.SetActive(false);
+                programmableObject2UI.SetActive(false);
+                break;
+            case DeveloperTabs.ProgrammableEnemy:
+                SetCurrentEventsActions_ProgrammableEnemy();
+                programmableObject1UI.SetActive(false);
+                programmableEnemyUI.SetActive(true);
+                programmableObject2UI.SetActive(false);
+                break;
+            case DeveloperTabs.ProgrammableObject2:
+                SetCurrentEventsActions_ProgrammableObject2();
+                programmableObject1UI.SetActive(false);
+                programmableEnemyUI.SetActive(false);
+                programmableObject2UI.SetActive(true);
+                break;
+        }
     }
 
     public void SetCurrentEventConnector(Button button)
     {
         if (currentEventConnector != button)
         {
+            if (currentEventConnector != null) { currentEventConnector.GetComponent<Image>().color = defaultConnectorColor; }
             currentEventConnector = button;
+            currentEventConnector.GetComponent<Image>().color = selectedConnectorColor;
         }
         else
         {
+            currentEventConnector.GetComponent<Image>().color = defaultConnectorColor;
             currentEventConnector = null;
         }
 
@@ -165,10 +167,13 @@ public class DeveloperController : MonoBehaviour
     {
         if (currentActionConnector != button)
         {
+            if (currentActionConnector != null) { currentActionConnector.GetComponent<Image>().color = defaultConnectorColor; }
             currentActionConnector = button;
+            currentActionConnector.GetComponent<Image>().color = selectedConnectorColor;
         }
         else
         {
+            currentActionConnector.GetComponent<Image>().color = defaultConnectorColor;
             currentActionConnector = null;
         }
 
@@ -180,6 +185,9 @@ public class DeveloperController : MonoBehaviour
 
     private void ConnectEventToAction()
     {
+        currentActionConnector.GetComponent<Image>().color = defaultConnectorColor;
+        currentEventConnector.GetComponent<Image>().color = defaultConnectorColor;
+
         ProgrammableEventType programmableEventType = eventConnectors[currentEventConnector];
         ProgrammableActionType programmableActionType = actionConnectors[currentActionConnector];
 
@@ -282,8 +290,22 @@ public class DeveloperController : MonoBehaviour
         currentActionConnector = null;
     }
 
+    public void ClearAllLines()
+    {
+        foreach (KeyValuePair<(ProgrammableEventType, ProgrammableActionType), GameObject> keyValuePair in connectionTypeToLineRenderer)
+        {
+            Destroy(keyValuePair.Value);
+        }
+        connectionTypeToLineRenderer.Clear();
+
+        currentEventsActions.Clear();
+    }
+
     public void DeveloperTurnEnd()
     {
+        if (hasEnded) { return; }
+        hasEnded = true;
+
         GameManager.Instance.SetProgrammableEnemyEventsActions(localEnemyEventsActions);
         GameManager.Instance.SetProgrammableObject1EventsActions(localObject1EventsActions);
         GameManager.Instance.SetProgrammableObject2EventsActions(localObject2EventsActions);

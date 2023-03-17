@@ -17,9 +17,9 @@ public class PlatformerMovement : MonoBehaviour
     [Header("GroundDetection")]
     [SerializeField] private float jumpDelay = 0.15f;
     [SerializeField] private float groundDelay = 0.15f;
-    [SerializeField] private Vector3 colliderWidth = new(0.55f, 0f, 0f);
+    public Vector3 colliderWidth = new(0.55f, 0f, 0f);
     [SerializeField] private Vector3 colliderOffset;
-    [SerializeField] private float groundDistance = 0.55f;
+    public float groundDistance = 0.55f;
     public LayerMask groundLayer;
 
     [Header("JumpSqueeze")]
