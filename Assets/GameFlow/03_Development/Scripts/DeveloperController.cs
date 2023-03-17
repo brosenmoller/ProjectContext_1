@@ -70,6 +70,7 @@ public class DeveloperController : MonoBehaviour
     private Button currentActionConnector = null;
 
     private float timer;
+    private bool hasEnded;
 
     private Dictionary<(ProgrammableEventType, ProgrammableActionType), GameObject> connectionTypeToLineRenderer = new();
 
@@ -302,6 +303,9 @@ public class DeveloperController : MonoBehaviour
 
     public void DeveloperTurnEnd()
     {
+        if (hasEnded) { return; }
+        hasEnded = true;
+
         GameManager.Instance.SetProgrammableEnemyEventsActions(localEnemyEventsActions);
         GameManager.Instance.SetProgrammableObject1EventsActions(localObject1EventsActions);
         GameManager.Instance.SetProgrammableObject2EventsActions(localObject2EventsActions);

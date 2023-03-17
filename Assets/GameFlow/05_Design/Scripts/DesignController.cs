@@ -56,6 +56,7 @@ public class DesignController : MonoBehaviour
     [SerializeField] private SerializableDictionary<ProgrammableObjectSpriteType, Sprite> spriteFromSpriteType = new();
 
     private float timer;
+    private bool hasEnded = false;
 
     private void Awake()
     {
@@ -154,6 +155,8 @@ public class DesignController : MonoBehaviour
 
     public void OnDesignTurnEnd()
     {
+        if (hasEnded) { return; }
+        hasEnded = true;
         GameManager.Instance.SetLevelLayout(tileBrushController.occupiedLocations);
         GameManager.Instance.NextTurn();
     }

@@ -49,6 +49,8 @@ public class ProgrammableObject : MonoBehaviour
 
     private void CheckPlayerInRange()
     {
+        if (player == null) { return; }
+
         RaycastHit2D hit = Physics2D.Raycast(transform.position, player.transform.position - transform.position, 5f, playerLayer);
         if (hit)
         {

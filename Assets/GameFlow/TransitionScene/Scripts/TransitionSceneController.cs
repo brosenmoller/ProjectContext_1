@@ -9,6 +9,7 @@ public class TransitionSceneController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nextTurnText;
 
     private float timer = 0;
+    private bool hasEnded = false;
 
     private void Awake()
     {
@@ -31,19 +32,22 @@ public class TransitionSceneController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (timer > GameManager.Instance.CurrentTurnData.timer)
+        if (timer > 5)
         {
             OnTransitionSceneEnd();
         }
         else
         {
             timer += Time.fixedDeltaTime;
-            timerText.text = ((int)GameManager.Instance.CurrentTurnData.timer - (int)timer).ToString();
+            timerText.text = (5 - (int)timer).ToString();
         }
     }
 
     public void OnTransitionSceneEnd()
     {
+        if (hasEnded) { return; }
+        hasEnded = true;
+        Debug.Log("Transition scene end");
         GameManager.Instance.NextTurn();
     }
 }

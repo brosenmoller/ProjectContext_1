@@ -35,6 +35,7 @@ public class PlayTestController : MonoBehaviour
     private List<ProgrammableObject> programmableObjects = new();
 
     private float timer = 0;
+    private bool hasEnded;
     private const string timerSaveKey = "PlayTestTimer";
 
     private int health = 3;
@@ -285,6 +286,9 @@ public class PlayTestController : MonoBehaviour
 
     public void PlayTestTurnEnd()
     {
+        if (hasEnded) { return; }
+        hasEnded = true;
+
         PlayerPrefs.SetFloat(timerSaveKey, 0);
         GameManager.Instance.NextTurn();
     }

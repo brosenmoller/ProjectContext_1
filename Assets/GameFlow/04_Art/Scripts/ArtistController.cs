@@ -77,6 +77,7 @@ public class ArtistController : MonoBehaviour
     private ArtDrawTabs currentArtDrawTab;
 
     private float timer;
+    private bool hasEnded;
     private void Update()
     {
         if (timer >= GameManager.Instance.CurrentTurnData.timer)
@@ -262,13 +263,18 @@ public class ArtistController : MonoBehaviour
 
     public void OnArtistTurnEnd()
     {
+        if (hasEnded) { return; }
+
         GameManager.Instance.SetProgrammableObject1SpriteType(programmableObject1SpriteType);
         GameManager.Instance.SetProgrammableObject2SpriteType(programmableObject2SpriteType);
 
         GameManager.Instance.SetPlayerSprite(SpriteFromPixelGrid(playerPixelGrid));
         GameManager.Instance.SetEnemySprite(SpriteFromPixelGrid(enemyPixelGrid));
         GameManager.Instance.SetFinishSprite(SpriteFromPixelGrid(finishPixelGrid));
-        
+
+        hasEnded = true;
+        Debug.Log("Artist Turn end");
+
         GameManager.Instance.NextTurn();
     }
 
