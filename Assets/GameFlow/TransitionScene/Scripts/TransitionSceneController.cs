@@ -13,8 +13,8 @@ public class TransitionSceneController : MonoBehaviour
 
     private void Awake()
     {
+        Cursor.visible = true;
         timer = 0;
-        Debug.Log("Transition Scene");
     }
 
     private void Start()
@@ -47,7 +47,6 @@ public class TransitionSceneController : MonoBehaviour
     {
         if (hasEnded) { return; }
         hasEnded = true;
-        Debug.Log("Transition scene end");
         GameManager.Instance.NextTurn();
     }
 }

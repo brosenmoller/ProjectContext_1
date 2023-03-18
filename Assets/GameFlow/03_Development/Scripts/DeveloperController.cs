@@ -39,6 +39,7 @@ public class DeveloperController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private Color defaultConnectorColor;
     [SerializeField] private Color selectedConnectorColor;
+    [SerializeField] private AudioObject music;
 
     [Header("Lock References")]
     [SerializeField] private GameObject lockProgrammableObject1;
@@ -76,6 +77,9 @@ public class DeveloperController : MonoBehaviour
 
     private void Awake()
     {
+        music.Play();
+        Cursor.visible = true;
+
         foreach (SerializableKeyValuePair<Button, ProgrammableEventType> keyValuePair in eventConnectors)
         {
             eventConnectorButtons.Add(keyValuePair.value, keyValuePair.key);
@@ -305,6 +309,8 @@ public class DeveloperController : MonoBehaviour
     {
         if (hasEnded) { return; }
         hasEnded = true;
+
+        music.Stop();
 
         GameManager.Instance.SetProgrammableEnemyEventsActions(localEnemyEventsActions);
         GameManager.Instance.SetProgrammableObject1EventsActions(localObject1EventsActions);

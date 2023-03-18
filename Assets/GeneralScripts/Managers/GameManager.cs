@@ -27,44 +27,44 @@ public class GameManager : MonoBehaviour
 
 
         new TurnData(7, 5f, RoomType.Development, Player.Player1), // Transition
-        new TurnData(3, 30f, RoomType.Development, Player.Player1, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Development Turn
+        new TurnData(3, 40f, RoomType.Development, Player.Player1, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Development Turn
         
         new TurnData(7, 5f, RoomType.Art, Player.Player2), // Transition
-        new TurnData(4, 30f, RoomType.Art, Player.Player2, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Artist Turn
+        new TurnData(4, 40f, RoomType.Art, Player.Player2, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Artist Turn
         
         new TurnData(7, 5f, RoomType.Design, Player.Player3), // Transition
-        new TurnData(5, 30f, RoomType.Design, Player.Player3, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Design Turn
+        new TurnData(5, 40f, RoomType.Design, Player.Player3, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Design Turn
         
         new TurnData(7, 5f, RoomType.PlayTest, Player.Player1), // Transition
-        new TurnData(6, 30f, RoomType.PlayTest, Player.Player1, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First PlayTest Turn
+        new TurnData(6, 40f, RoomType.PlayTest, Player.Player1, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First PlayTest Turn
 
 
 
         new TurnData(7, 5f, RoomType.Development, Player.Player2), // Transition
-        new TurnData(3, 30f, RoomType.Development, Player.Player2, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Development Turn
+        new TurnData(3, 40f, RoomType.Development, Player.Player2, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Development Turn
         
         new TurnData(7, 5f, RoomType.Art, Player.Player3), // Transition
-        new TurnData(4, 30f, RoomType.Art, Player.Player3, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Artist Turn
+        new TurnData(4, 40f, RoomType.Art, Player.Player3, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Artist Turn
         
         new TurnData(7, 5f, RoomType.Design, Player.Player1), // Transition
-        new TurnData(5, 30f, RoomType.Design, Player.Player1, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Design Turn
+        new TurnData(5, 40f, RoomType.Design, Player.Player1, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second Design Turn
         
         new TurnData(7, 5f, RoomType.PlayTest, Player.Player2), // Transition
-        new TurnData(6, 30f, RoomType.PlayTest, Player.Player2, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second PlayTest Turn
+        new TurnData(6, 40f, RoomType.PlayTest, Player.Player2, true, false, true, true, false, false, DeveloperTabs.ProgrammableEnemy, ArtDrawTabs.Enemy, ArtChoseTabs.ProgrammableObject1), // Second PlayTest Turn
        
 
 
         new TurnData(7, 5f, RoomType.Development, Player.Player3), // Transition
-        new TurnData(3, 30f, RoomType.Development, Player.Player3, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Development Turn
+        new TurnData(3, 40f, RoomType.Development, Player.Player3, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Development Turn
         
         new TurnData(7, 5f, RoomType.Art, Player.Player1), // Transition
-        new TurnData(4, 30f, RoomType.Art, Player.Player1, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Artist Turn
+        new TurnData(4, 40f, RoomType.Art, Player.Player1, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Artist Turn
         
         new TurnData(7, 5f, RoomType.Design, Player.Player2), // Transition
-        new TurnData(5, 30f, RoomType.Design, Player.Player2, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Design Turn
+        new TurnData(5, 40f, RoomType.Design, Player.Player2, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Design Turn
         
         new TurnData(7, 5f, RoomType.PlayTest, Player.Player3), // Transition
-        new TurnData(6, 30f, RoomType.PlayTest, Player.Player3, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third PlayTest Turn
+        new TurnData(6, 40f, RoomType.PlayTest, Player.Player3, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2, true), // Third PlayTest Turn
     };
 
     private int currentGameFlowFase = 0;
@@ -141,8 +141,6 @@ public class GameManager : MonoBehaviour
     public void NextTurn()
     {
         currentGameFlowFase++;
-        Debug.Log(currentGameFlowFase.ToString());
-        Debug.Log(CurrentTurnData.sceneIndex);
         if (currentGameFlowFase < GameFlowSceneIndexArray.Length)
         {
             SceneManager.LoadScene(CurrentTurnData.sceneIndex);
