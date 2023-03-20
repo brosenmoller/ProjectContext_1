@@ -3940,6 +3940,7 @@ MonoBehaviour:
   timerText: {fileID: 1028388165}
   spriteTypeOptions: {fileID: 1030753391}
   artChose: {fileID: 593546058}
+  music: {fileID: 11400000, guid: 8cc8ff22b07928746926c577db0b2fb2, type: 2}
   lockPlayerDraw: {fileID: 1176680573}
   lockEnemyDraw: {fileID: 1846030661}
   lockFinishraw: {fileID: 2137681482}

@@ -149,6 +149,8 @@ MonoBehaviour:
   xSqueeze: 1.2
   ySqueeze: 0.8
   squeezeDuration: 0.1
+  jumpSound: {fileID: 11400000, guid: 8aca601e08f768b45af322ece130f5c9, type: 2}
+  walking: {fileID: 11400000, guid: daa62818eb17af544a809bf22615cca6, type: 2}
 --- !u!50 &8915006015861041549
 Rigidbody2D:
   serializedVersion: 4

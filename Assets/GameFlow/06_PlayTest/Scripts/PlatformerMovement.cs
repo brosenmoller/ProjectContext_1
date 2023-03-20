@@ -28,6 +28,10 @@ public class PlatformerMovement : MonoBehaviour
     [SerializeField] private float ySqueeze = 0.8f;
     [SerializeField] private float squeezeDuration = 0.1f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioObject jumpSound;
+    [SerializeField] private AudioObject walking;
+
     private bool isGrounded;
     private bool wasGrounded;
 
@@ -150,14 +154,17 @@ public class PlatformerMovement : MonoBehaviour
         if (Mathf.Abs(movement) < 0.01f)
         {
             horizontalVelocity *= Mathf.Pow(1f - horizontalDampingWhenStopping, Time.deltaTime * 10f);
+            walking.Stop();
         }
         else if (Mathf.Sign(movement) != Mathf.Sign(horizontalVelocity))
         {
             horizontalVelocity *= Mathf.Pow(1f - horizontalDampingWhenTurning, Time.deltaTime * 10f);
+            if (!walking.IsPlaying) { walking.Play(); }
         }
         else
         {
             horizontalVelocity *= Mathf.Pow(1f - basicHorizontalDamping, Time.deltaTime * 10f);
+            if (!walking.IsPlaying) { walking.Play(); }
         }
 
         rb.velocity = new Vector2(horizontalVelocity, rb.velocity.y);
@@ -166,6 +173,8 @@ public class PlatformerMovement : MonoBehaviour
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpVelocity);
         playTestController.OnPlayerJump();
+
+        jumpSound.Play();
 
         jumpTimer = 0;
         groundTimer = 0;

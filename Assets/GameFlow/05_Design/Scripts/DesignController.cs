@@ -22,6 +22,7 @@ public class DesignController : MonoBehaviour
     [SerializeField] private LineRenderer borderLine;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private TileBrushController tileBrushController;
+    [SerializeField] private AudioObject music;
 
     [Header("UI Images")]
     [SerializeField] private Image playerButtonImage;
@@ -60,6 +61,7 @@ public class DesignController : MonoBehaviour
 
     private void Awake()
     {
+        music.Play();
         SetupBorder();
     }
 
@@ -157,6 +159,9 @@ public class DesignController : MonoBehaviour
     {
         if (hasEnded) { return; }
         hasEnded = true;
+
+        music.Stop();
+
         GameManager.Instance.SetLevelLayout(tileBrushController.occupiedLocations);
         GameManager.Instance.NextTurn();
     }

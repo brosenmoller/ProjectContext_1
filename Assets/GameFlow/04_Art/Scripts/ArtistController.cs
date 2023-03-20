@@ -43,6 +43,7 @@ public class ArtistController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private RectTransform spriteTypeOptions;
     [SerializeField] private GameObject artChose;
+    [SerializeField] private AudioObject music;
 
     [Header("Lock References")]
     [SerializeField] private GameObject lockPlayerDraw;
@@ -93,6 +94,8 @@ public class ArtistController : MonoBehaviour
 
     private void Start()
     {
+        music.Play();
+
         foreach (SerializableKeyValuePair<RectTransform, ProgrammableObjectSpriteType> keyValuePair in buttonToSpriteType)
         {
             spriteTypeToButton.Add(keyValuePair.value, keyValuePair.key);
@@ -265,6 +268,8 @@ public class ArtistController : MonoBehaviour
     {
         if (hasEnded) { return; }
 
+        music.Stop();
+
         GameManager.Instance.SetProgrammableObject1SpriteType(programmableObject1SpriteType);
         GameManager.Instance.SetProgrammableObject2SpriteType(programmableObject2SpriteType);
 
@@ -273,7 +278,6 @@ public class ArtistController : MonoBehaviour
         GameManager.Instance.SetFinishSprite(SpriteFromPixelGrid(finishPixelGrid));
 
         hasEnded = true;
-        Debug.Log("Artist Turn end");
 
         GameManager.Instance.NextTurn();
     }
