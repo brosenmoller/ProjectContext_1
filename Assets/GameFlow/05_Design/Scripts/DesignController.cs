@@ -61,12 +61,12 @@ public class DesignController : MonoBehaviour
 
     private void Awake()
     {
-        music.Play();
         SetupBorder();
     }
 
     private void Start()
     {
+        music.Play();
         SetThemedSprites();
         ApplyDesignerLocks();
     }

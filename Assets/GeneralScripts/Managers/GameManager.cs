@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
 
 
         new TurnData(7, 5f, RoomType.Development, Player.Player1), // Transition
+        new TurnData(8, 10f, RoomType.Development, Player.Player1, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Development Art Choose
         new TurnData(3, 40f, RoomType.Development, Player.Player1, true, false, false, true, false, true, DeveloperTabs.ProgrammableObject1, ArtDrawTabs.Player, ArtChoseTabs.ProgrammableObject1), // First Development Turn
         
         new TurnData(7, 5f, RoomType.Art, Player.Player2), // Transition
@@ -55,6 +56,7 @@ public class GameManager : MonoBehaviour
 
 
         new TurnData(7, 5f, RoomType.Development, Player.Player3), // Transition
+        new TurnData(8, 10f, RoomType.Development, Player.Player3, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Second Development Art Choose
         new TurnData(3, 40f, RoomType.Development, Player.Player3, true, true, true, true, true, true, DeveloperTabs.ProgrammableObject2, ArtDrawTabs.Finish, ArtChoseTabs.ProgrammableObject2), // Third Development Turn
         
         new TurnData(7, 5f, RoomType.Art, Player.Player1), // Transition

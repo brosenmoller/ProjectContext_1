@@ -29,5 +29,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/GameFlow/TransitionScene/TransitionScene.unity
     guid: 17e17460cde2f974fbbd1b744fe76cd1
+  - enabled: 1
+    path: Assets/GameFlow/03_Development/ChooseObjectArtScene.unity
+    guid: 268aad9fca958c54d93534a5ca57b42c
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: d21b874bf0929a046bc6134ce5b0fbb2, type: 2}
