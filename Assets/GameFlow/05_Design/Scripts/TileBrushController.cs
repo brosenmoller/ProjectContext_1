@@ -61,12 +61,37 @@ public class TileBrushController : MonoBehaviour
 
     public void ResetLevelLayoutToLastState()
     {
-        if (GameManager.Instance.GameData.levelLayout == null) { return; }
-
-        foreach (KeyValuePair<Vector3Int, GridCellContent> keyValuePair in GameManager.Instance.GameData.levelLayout)
+        if (GameManager.Instance.GameData.levelLayout == null) 
         {
-            occupiedLocations.Add(keyValuePair.Key, keyValuePair.Value);
-            SetTile(keyValuePair.Key, keyValuePair.Value);
+            SetCellContentToRandomHeight(GridCellContent.Player, (int)designController.gameArea.x - 1);
+            SetCellContentToRandomHeight(GridCellContent.Finish, (int)designController.gameArea.x + (int)designController.gameArea.width);
+        }
+        else
+        {
+            foreach (KeyValuePair<Vector3Int, GridCellContent> keyValuePair in GameManager.Instance.GameData.levelLayout)
+            {
+                occupiedLocations.Add(keyValuePair.Key, keyValuePair.Value);
+                SetTile(keyValuePair.Key, keyValuePair.Value);
+            }
+        }
+    }
+
+    private void SetCellContentToRandomHeight(GridCellContent content, int xLocation)
+    {
+        int height = Random.Range(
+            (int)designController.gameArea.y + 1,
+            (int)(designController.gameArea.y + designController.gameArea.height)
+        );
+
+        Vector3Int contentPosition = new(xLocation, height, 0);
+        occupiedLocations.Add(contentPosition, content);
+        SetTile(contentPosition, content);
+
+        for (int i = height - 1; i >= designController.gameArea.y; i--)
+        {
+            Vector3Int tilePosition = new(xLocation, i, 0);
+            occupiedLocations.Add(tilePosition, GridCellContent.GroundTileVariation1);
+            SetTile(tilePosition, GridCellContent.GroundTileVariation1);
         }
     }
 
@@ -170,6 +195,7 @@ public class TileBrushController : MonoBehaviour
     {
         Vector3Int removePosition = grid.WorldToCell(transform.position);
         if (!occupiedLocations.ContainsKey(removePosition)) { return; }
+        if (!IsPositionInCanvas(removePosition)) { return; }
 
         UnsetTile(removePosition, occupiedLocations[removePosition]);
         occupiedLocations.Remove(removePosition);

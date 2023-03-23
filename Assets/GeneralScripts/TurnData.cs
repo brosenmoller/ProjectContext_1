@@ -1,39 +1,39 @@
 ﻿
 public enum DeveloperTabs
 {
-    ProgrammableObject1,
-    ProgrammableEnemy,
-    ProgrammableObject2,
+    ProgrammableObject1 = 0,
+    ProgrammableEnemy = 1,
+    ProgrammableObject2 = 2,
 }
 
 public enum ArtDrawTabs
 {
-    Player,
-    Enemy,
-    Finish,
+    Player = 0,
+    Enemy = 1,
+    Finish = 2,
 }
 
 public enum ArtChoseTabs 
 {
-    ProgrammableObject1,
-    ProgrammableObject2,
+    ProgrammableObject1 = 0,
+    ProgrammableObject2 = 1,
 }
 
 public enum RoomType
 {
-    Other,
-    Development,
-    Art,
-    Design,
-    PlayTest,
+    Other = 0,
+    Development = 1,
+    Art = 2,
+    Design = 3,
+    PlayTest = 4,
 }
 
 public enum Player
 {
-    Unassigned,
-    Player1,
-    Player2,
-    Player3,
+    Unassigned = 0,
+    Player1 = 1,
+    Player2 = 2,
+    Player3 = 3,
 }
 
 public struct TurnData

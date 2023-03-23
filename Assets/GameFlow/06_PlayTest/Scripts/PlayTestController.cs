@@ -13,6 +13,8 @@ public class PlayTestController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [SerializeField] private RectTransform hearts;
+    [SerializeField] private GameObject turnEndButton;
+    [SerializeField] private AudioObject playTestMusic;
 
     [Header("Tilemap References")]
     [SerializeField] private TileBase futuristicGroundTile1;
@@ -44,7 +46,10 @@ public class PlayTestController : MonoBehaviour
         set 
         {
             health = value;
-            if (health < 0)
+
+            if (health > 3) { health = 3; }
+
+            if (health <= 0)
             {
                 ReloadScene();
             }
@@ -73,7 +78,11 @@ public class PlayTestController : MonoBehaviour
     {
         timer = PlayerPrefs.GetFloat(timerSaveKey, 0);
         programmableObjects.Clear();
-        if (GameManager.Instance.CurrentTurnData.infinitePlayTest) { timerText.gameObject.SetActive(false); }
+        if (GameManager.Instance.CurrentTurnData.infinitePlayTest) 
+        { 
+            timerText.gameObject.SetActive(false); 
+            turnEndButton.SetActive(false);
+        }
         SetBackground();
         SetupField();
     }
@@ -86,6 +95,7 @@ public class PlayTestController : MonoBehaviour
 
     private void Start()
     {
+        playTestMusic.Play();
         StartCoroutine(TimerEvents());
     }
 
@@ -206,9 +216,9 @@ public class PlayTestController : MonoBehaviour
 
     private void SetupField()
     {
-        Dictionary<Vector3Int, GridCellContent> levelLayout = GameManager.Instance.GameData.levelLayout;
+        if (GameManager.Instance.GameData.levelLayout == null) { return; }
 
-        foreach (KeyValuePair<Vector3Int, GridCellContent> cell in levelLayout)
+        foreach (KeyValuePair<Vector3Int, GridCellContent> cell in GameManager.Instance.GameData.levelLayout)
         {
             switch (cell.Value)
             {
@@ -289,8 +299,15 @@ public class PlayTestController : MonoBehaviour
         if (hasEnded) { return; }
         hasEnded = true;
 
+        playTestMusic.Stop();
+
         PlayerPrefs.SetFloat(timerSaveKey, 0);
         GameManager.Instance.NextTurn();
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetFloat(timerSaveKey, 0);
     }
 }
 

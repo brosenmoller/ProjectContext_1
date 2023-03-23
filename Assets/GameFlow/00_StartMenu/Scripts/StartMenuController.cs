@@ -11,13 +11,11 @@ public class StartMenuController : MonoBehaviour
 
     public void Quit()
     {
-        
         Application.Quit();
     }
 
     public void NextTurn()
     {
-        menuMuziek.Stop();
         GameManager.Instance.NextTurn();
     }
 }
