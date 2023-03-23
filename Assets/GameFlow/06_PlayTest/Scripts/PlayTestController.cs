@@ -46,6 +46,9 @@ public class PlayTestController : MonoBehaviour
         set 
         {
             health = value;
+
+            if (health > 3) { health = 3; }
+
             if (health <= 0)
             {
                 ReloadScene();
@@ -300,6 +303,11 @@ public class PlayTestController : MonoBehaviour
 
         PlayerPrefs.SetFloat(timerSaveKey, 0);
         GameManager.Instance.NextTurn();
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetFloat(timerSaveKey, 0);
     }
 }
 

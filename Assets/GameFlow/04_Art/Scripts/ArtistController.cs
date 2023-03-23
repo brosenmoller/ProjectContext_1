@@ -41,8 +41,6 @@ public class ArtistController : MonoBehaviour
     [Header("References")]
     [SerializeField] private PixelBrushController brushController;
     [SerializeField] private TextMeshProUGUI timerText;
-    [SerializeField] private RectTransform spriteTypeOptions;
-    [SerializeField] private GameObject artChose;
     [SerializeField] private AudioObject music;
 
     [Header("Lock References")]
@@ -53,28 +51,11 @@ public class ArtistController : MonoBehaviour
     [SerializeField] private GameObject playerDrawUI;
     [SerializeField] private GameObject enemyDrawUI;
     [SerializeField] private GameObject finishDrawUI;
-    [Space(12)]
-    [SerializeField] private GameObject lockProgrammableObject1ArtChose;
-    [SerializeField] private GameObject lockProgrammableObject2ArtChose;
-    [Space(6)]
-    [SerializeField] private GameObject programmableObject1ArtChoseUI;
-    [SerializeField] private GameObject programmableObject2ArtChoseUI;
-
-    [Header("RectTransform to SpriteType")]
-    [SerializeField] private SerializableDictionary<RectTransform, ProgrammableObjectSpriteType> buttonToSpriteType = new();
-
-    Dictionary<ProgrammableObjectSpriteType, RectTransform> spriteTypeToButton = new();
 
     private Color[,] playerPixelGrid;
     private Color[,] enemyPixelGrid;
     private Color[,] finishPixelGrid;
 
-    private ProgrammableObjectSpriteTypeReference programmableObject1SpriteType;
-    private ProgrammableObjectSpriteTypeReference programmableObject2SpriteType;
-
-    private ProgrammableObjectSpriteTypeReference currentProgrammableObjectSpriteType;
-
-    private Outline currentSelectionOutline;
     private ArtDrawTabs currentArtDrawTab;
 
     private float timer;
@@ -96,12 +77,7 @@ public class ArtistController : MonoBehaviour
     {
         music.Play();
 
-        foreach (SerializableKeyValuePair<RectTransform, ProgrammableObjectSpriteType> keyValuePair in buttonToSpriteType)
-        {
-            spriteTypeToButton.Add(keyValuePair.value, keyValuePair.key);
-        }
 
-        AssignSpriteTypes();
         AssignPixelGrids();
         ApplyArtLocks();
     }
@@ -136,76 +112,6 @@ public class ArtistController : MonoBehaviour
                 currentArtDrawTab = ArtDrawTabs.Finish;
                 break;
         }
-
-        if (GameManager.Instance.CurrentTurnData.artChoseStart) { EnableArtChose(); }
-        else { DisableArtChose(); }
-
-        lockProgrammableObject1ArtChose.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject1Unlocked);
-        lockProgrammableObject2ArtChose.SetActive(!GameManager.Instance.CurrentTurnData.programmableObject2Unlocked);
-
-        switch (GameManager.Instance.CurrentTurnData.startingArtChoseTab)
-        {
-            case ArtChoseTabs.ProgrammableObject1:
-                programmableObject1ArtChoseUI.SetActive(true);
-                programmableObject2ArtChoseUI.SetActive(false);
-                SetChoseObject1();
-                break;
-            case ArtChoseTabs.ProgrammableObject2:
-                programmableObject1ArtChoseUI.SetActive(false);
-                programmableObject2ArtChoseUI.SetActive(true);
-                SetChoseObject2();
-                break;
-        }
-    }
-
-    public void EnableArtChose()
-    {
-        artChose.SetActive(true);
-        brushController.canDraw = false;
-    }
-
-    public void DisableArtChose()
-    {
-        artChose.SetActive(false);
-
-        switch (currentArtDrawTab)
-        {
-            case ArtDrawTabs.Player:
-                brushController.canDraw = GameManager.Instance.CurrentTurnData.playerDrawUnlocked;
-                break;
-            case ArtDrawTabs.Enemy:
-                brushController.canDraw = GameManager.Instance.CurrentTurnData.programmableEnemyUnlocked;
-                break;
-            case ArtDrawTabs.Finish:
-                brushController.canDraw = GameManager.Instance.CurrentTurnData.finishDrawUnlocked;
-                break;
-        }
-    }
-
-    private void AssignSpriteTypes()
-    {
-        programmableObject1SpriteType = GameManager.Instance.GameData.programmableObject1SpriteType ?? 
-            new ProgrammableObjectSpriteTypeReference(ProgrammableObjectSpriteType.JumpPad);
-
-        programmableObject2SpriteType = GameManager.Instance.GameData.programmableObject2SpriteType ?? 
-            new ProgrammableObjectSpriteTypeReference(ProgrammableObjectSpriteType.BuzzSaw);
-
-        foreach (RectTransform child in spriteTypeOptions)
-        {
-            child.GetComponent<Button>().onClick.AddListener(() =>
-            {
-                SetProgrammableObjectSpriteType(buttonToSpriteType[child], child);
-            });
-        }
-    }
-
-    private void SetProgrammableObjectSpriteType(ProgrammableObjectSpriteType spriteType, RectTransform rectTransform)
-    {
-        currentProgrammableObjectSpriteType.programmableObjectSpriteType = spriteType;
-
-        if (currentSelectionOutline != null) { currentSelectionOutline.enabled = false; }
-        currentSelectionOutline = rectTransform.GetComponent<Outline>();
-        currentSelectionOutline.enabled = true;
     }
 
     private void AssignPixelGrids()
@@ -243,35 +149,11 @@ public class ArtistController : MonoBehaviour
         currentArtDrawTab = ArtDrawTabs.Finish;
     }
 
-    public void SetChoseObject1()
-    {
-        currentProgrammableObjectSpriteType = programmableObject1SpriteType;
-        RectTransform startButton = spriteTypeToButton[currentProgrammableObjectSpriteType.programmableObjectSpriteType];
-
-        if (currentSelectionOutline != null) { currentSelectionOutline.enabled = false; }
-        currentSelectionOutline = startButton.GetComponent<Outline>();
-        currentSelectionOutline.enabled = true;
-    }
-
-    public void SetChoseObject2()
-    {
-        currentProgrammableObjectSpriteType = programmableObject2SpriteType;
-        RectTransform startButton = spriteTypeToButton[currentProgrammableObjectSpriteType.programmableObjectSpriteType];
-
-        if (currentSelectionOutline != null) { currentSelectionOutline.enabled = false; }
-        currentSelectionOutline = startButton.GetComponent<Outline>();
-        currentSelectionOutline.enabled = true;
-    }
-
-
     public void OnArtistTurnEnd()
     {
         if (hasEnded) { return; }
 
         music.Stop();
-
-        GameManager.Instance.SetProgrammableObject1SpriteType(programmableObject1SpriteType);
-        GameManager.Instance.SetProgrammableObject2SpriteType(programmableObject2SpriteType);
 
         GameManager.Instance.SetPlayerSprite(SpriteFromPixelGrid(playerPixelGrid));
         GameManager.Instance.SetEnemySprite(SpriteFromPixelGrid(enemyPixelGrid));

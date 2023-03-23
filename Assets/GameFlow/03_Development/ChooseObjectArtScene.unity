@@ -4868,9 +4868,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ArtistController, Assembly-CSharp
-        m_MethodName: OnArtistTurnEnd
+      - m_Target: {fileID: 112534648}
+        m_TargetAssemblyTypeName: ChooseObjectArtController, Assembly-CSharp
+        m_MethodName: OnDevelopmentArtChooseTurnEnd
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

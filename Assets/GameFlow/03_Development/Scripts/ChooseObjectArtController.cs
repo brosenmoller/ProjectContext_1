@@ -19,8 +19,7 @@ public class ChooseObjectArtController : MonoBehaviour
 
     [Header("RectTransform to SpriteType")]
     [SerializeField] private SerializableDictionary<RectTransform, ProgrammableObjectSpriteType> buttonToSpriteType = new();
-
-    Dictionary<ProgrammableObjectSpriteType, RectTransform> spriteTypeToButton = new();
+    private readonly Dictionary<ProgrammableObjectSpriteType, RectTransform> spriteTypeToButton = new();
 
     private ProgrammableObjectSpriteTypeReference programmableObject1SpriteType;
     private ProgrammableObjectSpriteTypeReference programmableObject2SpriteType;
@@ -130,7 +129,7 @@ public class ChooseObjectArtController : MonoBehaviour
         hasEnded = true;
 
         music.Stop();
-
+        Debug.Log(programmableObject1SpriteType.programmableObjectSpriteType);
         GameManager.Instance.SetProgrammableObject1SpriteType(programmableObject1SpriteType);
         GameManager.Instance.SetProgrammableObject2SpriteType(programmableObject2SpriteType);
         GameManager.Instance.NextTurn();
