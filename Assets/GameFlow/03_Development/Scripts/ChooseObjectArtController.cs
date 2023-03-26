@@ -129,7 +129,7 @@ public class ChooseObjectArtController : MonoBehaviour
         hasEnded = true;
 
         music.Stop();
-        Debug.Log(programmableObject1SpriteType.programmableObjectSpriteType);
+
         GameManager.Instance.SetProgrammableObject1SpriteType(programmableObject1SpriteType);
         GameManager.Instance.SetProgrammableObject2SpriteType(programmableObject2SpriteType);
         GameManager.Instance.NextTurn();

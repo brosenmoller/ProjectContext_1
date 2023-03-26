@@ -24,6 +24,7 @@ public class TileBrushController : MonoBehaviour
     [Header("References")]
     [SerializeField] private SpriteRenderer brushSpriteRender;
     [SerializeField] private DesignController designController;
+    [SerializeField] private Sprite defaultFinishSprite;
 
     private GridCellContent selectedCellContent;
 
@@ -228,7 +229,8 @@ public class TileBrushController : MonoBehaviour
             case GridCellContent.Finish:
                 locationsOfNonTilemapPrefabs.Add(
                     placementPosition,
-                    InstantiateSprite(placementPosition, GameManager.Instance.GameData.finishSprite)
+                    InstantiateSprite(placementPosition, GameManager.Instance.CurrentTurnData.startingArtDrawTab != ArtDrawTabs.Finish ?
+                     defaultFinishSprite : GameManager.Instance.GameData.finishSprite)
                 );
 
                 break;

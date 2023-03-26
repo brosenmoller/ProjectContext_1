@@ -15,6 +15,7 @@ public class PlayTestController : MonoBehaviour
     [SerializeField] private RectTransform hearts;
     [SerializeField] private GameObject turnEndButton;
     [SerializeField] private AudioObject playTestMusic;
+    [SerializeField] private Sprite defaultFinishSprite;
 
     [Header("Tilemap References")]
     [SerializeField] private TileBase futuristicGroundTile1;
@@ -238,7 +239,18 @@ public class PlayTestController : MonoBehaviour
 
                 case GridCellContent.Finish:
                     GameObject finishObject = Instantiate(finishPrefab, (Vector3)cell.Key + new Vector3(.5f, .5f, 0), Quaternion.identity);
-                    finishObject.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GameData.finishSprite;
+                    
+
+                    if (GameManager.Instance.CurrentTurnData.startingArtDrawTab != ArtDrawTabs.Finish)
+                    {
+                        finishObject.GetComponent<SpriteRenderer>().sprite = defaultFinishSprite;
+                    }
+                    else
+                    {
+                        finishObject.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GameData.finishSprite;
+                    }
+                    
+                    
                     break;
 
                 case GridCellContent.Enemy:

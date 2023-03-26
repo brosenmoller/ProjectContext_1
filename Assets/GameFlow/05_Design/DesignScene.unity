@@ -3067,6 +3067,7 @@ MonoBehaviour:
   emptySpriteRenderer: {fileID: 6137309939995787060, guid: 51da9f02c155e6948bc28be5ee5a789d, type: 3}
   brushSpriteRender: {fileID: 817173319}
   designController: {fileID: 447697538}
+  defaultFinishSprite: {fileID: 21300000, guid: bca5e1f76d1ac874bb6eb2d9fc227955, type: 3}
 --- !u!1 &1008982094
 GameObject:
   m_ObjectHideFlags: 0

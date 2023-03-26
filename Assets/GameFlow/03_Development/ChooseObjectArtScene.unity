@@ -760,6 +760,7 @@ MonoBehaviour:
   music: {fileID: 11400000, guid: cce9629dd20127d44a1d5676422b62f7, type: 2}
   spriteTypeOptions: {fileID: 1841164604}
   timerText: {fileID: 140158731}
+  defaultFinishSprite: {fileID: 21300000, guid: bca5e1f76d1ac874bb6eb2d9fc227955, type: 3}
   lockProgrammableObject1ArtChose: {fileID: 1057966935}
   lockProgrammableObject2ArtChose: {fileID: 128000751}
   programmableObject1ArtChoseUI: {fileID: 294142422}
