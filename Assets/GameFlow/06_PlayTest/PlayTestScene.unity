@@ -205,7 +205,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &248604152
 GameObject:
@@ -399,7 +399,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &442673955
 GameObject:
@@ -1144,7 +1144,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1425401609
 GameObject:
@@ -1600,6 +1600,7 @@ MonoBehaviour:
   hearts: {fileID: 248604153}
   turnEndButton: {fileID: 442673955}
   playTestMusic: {fileID: 11400000, guid: c95557bd214a513459f135d762b0a22e, type: 2}
+  defaultFinishSprite: {fileID: 21300000, guid: bca5e1f76d1ac874bb6eb2d9fc227955, type: 3}
   futuristicGroundTile1: {fileID: 11400000, guid: 889e31e5a14c6af4e8ffc132f4d6092a, type: 2}
   futuristicGroundTile2: {fileID: 11400000, guid: 3da16a54168a788439035f460538e25e, type: 2}
   forestGroundTile1: {fileID: 11400000, guid: 3b6e24e6dc32d244ba8039a5748c6704, type: 2}
@@ -1772,7 +1773,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1699777762
 GameObject:
@@ -1895,7 +1896,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1868942165
 GameObject:
@@ -1951,7 +1952,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1897067669
 GameObject:
