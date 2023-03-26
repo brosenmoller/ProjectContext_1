@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class PixelBrushController : MonoBehaviour 
 {
-    public static Dictionary<Vector3, SpriteRenderer> occupiedLocations = new();
-    public static Color[,] pixelGrid;
-
     [Header("General Settings")]
     [SerializeField] private float gridCellSize;
     [SerializeField] private Transform canvas;
@@ -24,7 +21,8 @@ public class PixelBrushController : MonoBehaviour
     [SerializeField] private RectTransform palleteLayoutGroup;
     [SerializeField] private GameObject colorPalleteColorImage;
 
-    private readonly Dictionary<Color, Outline> colorPalleteOutlines = new();
+    private readonly Dictionary<Vector3, SpriteRenderer> occupiedLocations = new();
+    private Color[,] currentPixelGrid;
 
     private Color selectedColor;
 
@@ -35,55 +33,35 @@ public class PixelBrushController : MonoBehaviour
 
     private SpriteRenderer brushSpriteRender;
 
+    private Outline currentSelectionOutline;
+
+    [HideInInspector] public bool canDraw = false;
+
     private void Awake()
     {
         brushSpriteRender = GetComponent<SpriteRenderer>();
-        occupiedLocations.Clear();
-
-        pixelGrid = new Color[(int)canvasSize, (int)canvasSize];
-
-        for (int x = 0; x < pixelGrid.GetLength(0); x++)
-        {
-            for (int y = 0; y < pixelGrid.GetLength(1); y++)
-            {
-                pixelGrid[x, y] = Color.clear;
-            }
-        }
-
-        for (int i = 0; i < selectableColors.Length; i++)
-        {
-            GameObject colorPalleteButton = Instantiate(colorPalleteColorImage, palleteLayoutGroup);
-            Image colorImage = colorPalleteButton.GetComponent<Image>();
-            colorImage.color = selectableColors[i];
-            colorPalleteOutlines.Add(colorImage.color, colorPalleteButton.GetComponent<Outline>());
-
-            colorPalleteButton.GetComponent<Button>().onClick.AddListener(() => 
-            {
-                SetBrushColor(colorImage.color);
-            });
-        }
 
         selectedColor = selectableColors[0];
         SetBrushColor(selectableColors[0]);
-        
-        canvas.localScale = new Vector3(canvasSize / 2 - 0.5f, canvasSize / 2 - 0.5f, 1);
-    }
 
-    public void ClearCanvas()
-    {
-        foreach (Transform child in pixelParent)
+
+        RectTransform startingColor = palleteLayoutGroup.GetChild(0) as RectTransform;
+        SetBrushColor(startingColor.GetComponent<Image>().color);
+
+        currentSelectionOutline = startingColor.GetComponent<Outline>();
+        currentSelectionOutline.enabled = true;
+
+        foreach (RectTransform child in palleteLayoutGroup)
         {
-            Destroy(child.gameObject);
+            child.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                SetBrushColor(child.GetComponent<Image>().color);
+
+                if (currentSelectionOutline != null) { currentSelectionOutline.enabled = false; }
+                currentSelectionOutline = child.GetComponent<Outline>();
+                currentSelectionOutline.enabled = true;
+            });
         }
-
-        occupiedLocations.Clear();
-    }
-
-    private void SetBrushColor(Color color)
-    {
-        colorPalleteOutlines[selectedColor].enabled = false;
-        selectedColor = color;
-        colorPalleteOutlines[selectedColor].enabled = true;
     }
 
     private void Start()
@@ -95,6 +73,58 @@ public class PixelBrushController : MonoBehaviour
         GameManager.InputManager.controls.Default.Erase.canceled += SetBrushModeNone;
 
         GameManager.InputManager.controls.Default.CursorMovement.performed += CursorMovement;
+    }
+
+    public void SetPixelGrid(Color[,] newPixelGrid)
+    {
+        foreach (Transform child in pixelParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        occupiedLocations.Clear();
+
+        currentPixelGrid = newPixelGrid;
+        for (int x = 0; x < newPixelGrid.GetLength(0); x++)
+        {
+            for (int y = 0; y < newPixelGrid.GetLength(1); y++)
+            {
+                if (newPixelGrid[x, y] == Color.clear) { continue; }
+
+                Vector3 placementPosition = new
+                (
+                    (float)(.5f * x + .5f),
+                    (float)(.5f * y - 3.5f),
+                    0
+                );
+
+                InstantiatePixel(placementPosition, newPixelGrid[x, y]);
+            }
+        }
+
+    }
+
+    public void ClearCanvas()
+    {
+        foreach (Transform child in pixelParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        occupiedLocations.Clear();
+
+        for (int x = 0; x < currentPixelGrid.GetLength(0); x++)
+        {
+            for (int y = 0; y < currentPixelGrid.GetLength(1); y++)
+            {
+                currentPixelGrid[x, y] = Color.clear;
+            }
+        }
+    }
+
+    public void SetBrushColor(Color color)
+    {
+        selectedColor = color;
     }
 
     private void OnDisable()
@@ -125,6 +155,8 @@ public class PixelBrushController : MonoBehaviour
 
     private void CursorMovement(InputAction.CallbackContext callbackContext)
     {
+        if (!canDraw) {  return; }
+
         Vector2 mousePosition = callbackContext.ReadValue<Vector2>();
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(mousePosition);
         mousePos = SnapPositionToGrid(mousePos);
@@ -144,6 +176,8 @@ public class PixelBrushController : MonoBehaviour
 
     private void PaintPixel()
     {
+        if (!canDraw) { return; }
+
         Vector3 placementPosition = transform.position;
         if (!IsPositionInCanvas(placementPosition)) { return; }
         
@@ -154,27 +188,34 @@ public class PixelBrushController : MonoBehaviour
             ErasePixel();
         }
 
+        currentPixelGrid[
+            (int)(2 * placementPosition.x - 1),
+            (int)(2 * placementPosition.y + 7)
+        ] = selectedColor;
+
+        InstantiatePixel(placementPosition, selectedColor);
+    }
+
+    private void InstantiatePixel(Vector3 placementPosition, Color color)
+    {
         GameObject newPixel = Instantiate(placeableObject, placementPosition, Quaternion.identity);
         newPixel.transform.parent = pixelParent;
 
-        pixelGrid[
-            (int)(placementPosition.x - canvas.position.x + gridOffset + canvasSize / 2),
-            (int)(placementPosition.y - canvas.position.y + gridOffset + canvasSize / 2)
-        ] = selectedColor;
-
         SpriteRenderer pixelSpriteRenderer = newPixel.GetComponent<SpriteRenderer>();
-        pixelSpriteRenderer.color = selectedColor;
+        pixelSpriteRenderer.color = color;
         occupiedLocations.Add(placementPosition, pixelSpriteRenderer);
     }
 
     private void ErasePixel()
     {
+        if (!canDraw) { return; }
+
         Vector3 removePosition = transform.position;
         if (!occupiedLocations.ContainsKey(removePosition)) { return; }
         
-        pixelGrid[
-            (int)(removePosition.x - canvas.position.x + gridOffset + canvasSize / 2),
-            (int)(removePosition.y - canvas.position.y + gridOffset + canvasSize / 2)
+        currentPixelGrid[
+            (int)(2 * removePosition.x - 1),
+            (int)(2 * removePosition.y + 7)
         ] = Color.clear;
 
         GameObject pixelToBeRemoved = occupiedLocations[removePosition].gameObject;

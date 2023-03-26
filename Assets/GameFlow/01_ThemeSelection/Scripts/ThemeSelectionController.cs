@@ -1,9 +1,11 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ThemeSelectionController : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] private TextMeshProUGUI pleaseChoseATheme;
     [SerializeField] private Button forestThemeButton;
     [SerializeField] private Button castleThemeButton;
     [SerializeField] private Button sciFiThemeButton;
@@ -13,6 +15,7 @@ public class ThemeSelectionController : MonoBehaviour
     private Outline sciFiThemeButtonOutline;
 
     private GameTheme currentlySelectedGameTheme;
+    private bool gameThemeAsigned = false;
 
     private void Awake()
     {
@@ -28,6 +31,8 @@ public class ThemeSelectionController : MonoBehaviour
     public void SetGameTheme(GameTheme gameTheme)
     {
         currentlySelectedGameTheme = gameTheme;
+        pleaseChoseATheme.enabled = false;
+        gameThemeAsigned = true;
         
         switch (gameTheme)
         {
@@ -51,6 +56,12 @@ public class ThemeSelectionController : MonoBehaviour
 
     public void Submit()
     {
+        if (!gameThemeAsigned)
+        {
+            pleaseChoseATheme.enabled = true;
+            return;
+        }
+
         GameManager.Instance.SetGameTheme(currentlySelectedGameTheme);
         GameManager.Instance.NextTurn();
     }

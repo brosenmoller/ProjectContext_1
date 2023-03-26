@@ -17,9 +17,9 @@ public class PlatformerMovement : MonoBehaviour
     [Header("GroundDetection")]
     [SerializeField] private float jumpDelay = 0.15f;
     [SerializeField] private float groundDelay = 0.15f;
-    [SerializeField] private Vector3 colliderWidth = new(0.55f, 0f, 0f);
+    public Vector3 colliderWidth = new(0.55f, 0f, 0f);
     [SerializeField] private Vector3 colliderOffset;
-    [SerializeField] private float groundDistance = 0.55f;
+    public float groundDistance = 0.55f;
     public LayerMask groundLayer;
 
     [Header("JumpSqueeze")]
@@ -27,6 +27,10 @@ public class PlatformerMovement : MonoBehaviour
     [SerializeField] private float xSqueeze = 1.2f;
     [SerializeField] private float ySqueeze = 0.8f;
     [SerializeField] private float squeezeDuration = 0.1f;
+
+    [Header("Audio")]
+    [SerializeField] private AudioObject jumpSound;
+    [SerializeField] private AudioObject walking;
 
     private bool isGrounded;
     private bool wasGrounded;
@@ -150,14 +154,17 @@ public class PlatformerMovement : MonoBehaviour
         if (Mathf.Abs(movement) < 0.01f)
         {
             horizontalVelocity *= Mathf.Pow(1f - horizontalDampingWhenStopping, Time.deltaTime * 10f);
+            walking.Stop();
         }
         else if (Mathf.Sign(movement) != Mathf.Sign(horizontalVelocity))
         {
             horizontalVelocity *= Mathf.Pow(1f - horizontalDampingWhenTurning, Time.deltaTime * 10f);
+            if (!walking.IsPlaying) { walking.Play(); }
         }
         else
         {
             horizontalVelocity *= Mathf.Pow(1f - basicHorizontalDamping, Time.deltaTime * 10f);
+            if (!walking.IsPlaying) { walking.Play(); }
         }
 
         rb.velocity = new Vector2(horizontalVelocity, rb.velocity.y);
@@ -166,6 +173,8 @@ public class PlatformerMovement : MonoBehaviour
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpVelocity);
         playTestController.OnPlayerJump();
+
+        jumpSound.Play();
 
         jumpTimer = 0;
         groundTimer = 0;

@@ -1,16 +1,20 @@
 using Cinemachine;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.SearchService;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static UnityEditor.Searcher.Searcher.AnalyticsEvent;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayTestController : MonoBehaviour
 {
     [Header("Scene References")]
     [SerializeField] private Tilemap groundTilemap;
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
+    [SerializeField] private RectTransform hearts;
+    [SerializeField] private GameObject turnEndButton;
+    [SerializeField] private AudioObject playTestMusic;
 
     [Header("Tilemap References")]
     [SerializeField] private TileBase futuristicGroundTile1;
@@ -25,43 +29,161 @@ public class PlayTestController : MonoBehaviour
     [SerializeField] private GameObject finishPrefab;
     [SerializeField] private GameObject programmableOjectPrefab;
 
+    [Header("Themed Backgrounds")]
+    [SerializeField] private GameObject futuristicBackground;
+    [SerializeField] private GameObject castleBackground;
+    [SerializeField] private GameObject forestBackground;
+
     private List<ProgrammableObject> programmableObjects = new();
 
-    private Timer halfSecondTimer;
-    private Timer threeSecondTimer;
-    private Timer tenSecondTimer;
+    private float timer = 0;
+    private bool hasEnded;
+    private const string timerSaveKey = "PlayTestTimer";
+
+    private int health = 3;
+    public int Health { 
+        get { return health; } 
+        set 
+        {
+            health = value;
+
+            if (health > 3) { health = 3; }
+
+            if (health <= 0)
+            {
+                ReloadScene();
+            }
+            else if (health == 3)
+            {
+                hearts.GetChild(0).gameObject.SetActive(true);
+                hearts.GetChild(1).gameObject.SetActive(true);
+                hearts.GetChild(2).gameObject.SetActive(true);
+            }
+            else if (health == 2)
+            {
+                hearts.GetChild(0).gameObject.SetActive(true);
+                hearts.GetChild(1).gameObject.SetActive(true);
+                hearts.GetChild(2).gameObject.SetActive(false);
+            }
+            else if (health == 1)
+            {
+                hearts.GetChild(0).gameObject.SetActive(true);
+                hearts.GetChild(1).gameObject.SetActive(false);
+                hearts.GetChild(2).gameObject.SetActive(false);
+            }
+        }
+    }
 
     private void Awake()
     {
+        timer = PlayerPrefs.GetFloat(timerSaveKey, 0);
         programmableObjects.Clear();
+        if (GameManager.Instance.CurrentTurnData.infinitePlayTest) 
+        { 
+            timerText.gameObject.SetActive(false); 
+            turnEndButton.SetActive(false);
+        }
+        SetBackground();
         SetupField();
+    }
+
+    public void ReloadScene()
+    {
+        PlayerPrefs.SetFloat(timerSaveKey, timer);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void Start()
     {
-        halfSecondTimer = new Timer(.5f, () =>
-        {
-            foreach (ProgrammableObject obj in programmableObjects)
-            {
-                obj.InvokeEvent(ProgrammableEventType.EVERY_HALF_SECOND);
-            }
-        }, true, true);
+        playTestMusic.Play();
+        StartCoroutine(TimerEvents());
+    }
 
-        threeSecondTimer = new Timer(3f, () =>
-        {
-            foreach (ProgrammableObject obj in programmableObjects)
-            {
-                obj.InvokeEvent(ProgrammableEventType.EVERY_3_SECONDS);
-            }
-        }, true, true);
+    private void Update()
+    {
+        UpdateTimer();
+    }
 
-        tenSecondTimer = new Timer(10f, () =>
+    private void UpdateTimer()
+    {
+        if (GameManager.Instance.CurrentTurnData.infinitePlayTest) { return; }
+
+        if (timer >= GameManager.Instance.CurrentTurnData.timer)
         {
-            foreach (ProgrammableObject obj in programmableObjects)
+            PlayTestTurnEnd();
+        }
+        else
+        {
+            timer += Time.deltaTime;
+            timerText.text = ((int)GameManager.Instance.CurrentTurnData.timer - (int)timer).ToString();
+        }
+    }
+
+    private void SetBackground()
+    {
+        switch (GameManager.Instance.GameData.gameTheme)
+        {
+            case GameTheme.SciFi:
+                futuristicBackground.SetActive(true);
+                forestBackground.SetActive(false);
+                castleBackground.SetActive(false);
+                break;
+            case GameTheme.Castle:
+                futuristicBackground.SetActive(false);
+                castleBackground.SetActive(true);
+                forestBackground.SetActive(false);
+                break;
+            case GameTheme.Forest:
+                futuristicBackground.SetActive(false);
+                castleBackground.SetActive(false);
+                forestBackground.SetActive(true);
+                break;
+        }
+    }
+
+    private IEnumerator TimerEvents()
+    {
+        int halfSecondCounter = 0;
+
+        while (true)
+        {
+            yield return new WaitForSeconds(.5f);
+            halfSecondCounter++;
+            EveryHalfSecond();
+            if (halfSecondCounter == 6 || halfSecondCounter == 12 || halfSecondCounter == 18)
             {
-                obj.InvokeEvent(ProgrammableEventType.EVERY_10_SECONDS);
+                EveryThreeSeconds();
             }
-        }, true, true);
+            else if (halfSecondCounter == 20)
+            {
+                EveryTenSeconds();
+                halfSecondCounter = 0;
+            }
+        }
+    }
+
+    private void EveryHalfSecond()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.EVERY_HALF_SECOND);
+        }
+    }
+
+    private void EveryThreeSeconds()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.EVERY_3_SECONDS);
+        }
+    }
+
+    private void EveryTenSeconds()
+    {
+        foreach (ProgrammableObject obj in programmableObjects)
+        {
+            obj.InvokeEvent(ProgrammableEventType.EVERY_10_SECONDS);
+        }
     }
 
     public void OnPlayerWalk()
@@ -89,16 +211,14 @@ public class PlayTestController : MonoBehaviour
 
     private void OnDisable()
     {
-        halfSecondTimer.Pause();
-        threeSecondTimer.Pause();
-        tenSecondTimer.Pause();
+        StopAllCoroutines();
     }
 
     private void SetupField()
     {
-        Dictionary<Vector3Int, GridCellContent> levelLayout = GameManager.Instance.GameData.levelLayout;
+        if (GameManager.Instance.GameData.levelLayout == null) { return; }
 
-        foreach (KeyValuePair<Vector3Int, GridCellContent> cell in levelLayout)
+        foreach (KeyValuePair<Vector3Int, GridCellContent> cell in GameManager.Instance.GameData.levelLayout)
         {
             switch (cell.Value)
             {
@@ -158,8 +278,6 @@ public class PlayTestController : MonoBehaviour
             _ => futuristicGroundTile1,
         };
 
-        tile = futuristicGroundTile1;
-
         groundTilemap.SetTile(placementPosition, tile);
     }
 
@@ -173,14 +291,23 @@ public class PlayTestController : MonoBehaviour
             _ => futuristicGroundTile2,
         };
 
-        tile = futuristicGroundTile2;
-
         groundTilemap.SetTile(placementPosition, tile);
     }
 
     public void PlayTestTurnEnd()
     {
+        if (hasEnded) { return; }
+        hasEnded = true;
+
+        playTestMusic.Stop();
+
+        PlayerPrefs.SetFloat(timerSaveKey, 0);
         GameManager.Instance.NextTurn();
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetFloat(timerSaveKey, 0);
     }
 }
 

@@ -28,6 +28,8 @@ public class NameEnterController : MonoBehaviour
             return;
         }
 
+        GameManager.Instance.gameObject.GetComponent<AudioSource>().Stop();
+
         GameManager.Instance.SetNamePlayer1(player1Name);
         GameManager.Instance.SetNamePlayer2(player2Name);
         GameManager.Instance.SetNamePlayer3(player3Name);

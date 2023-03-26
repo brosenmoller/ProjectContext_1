@@ -6,15 +6,19 @@ using UnityEngine.Tilemaps;
 
 public class TileBrushController : MonoBehaviour 
 {
-    public static Dictionary<Vector3Int, GridCellContent> occupiedLocations = new();
+    public Dictionary<Vector3Int, GridCellContent> occupiedLocations = new();
 
     [Header("Tilemap & Grid")]
     [SerializeField] private Tilemap groundTilemap;
     [SerializeField] private Grid grid;
 
     [Header("Tiles")]
-    [SerializeField] private TileBase groundTileVariation1;
-    [SerializeField] private TileBase groundTileVariation2;
+    [SerializeField] private RuleTile mainFuturisticTile;
+    [SerializeField] private RuleTile secondaryFuturisticTile;
+    [SerializeField] private RuleTile mainCastleTile;
+    [SerializeField] private RuleTile secondaryCastleTile;
+    [SerializeField] private RuleTile mainForestTile;
+    [SerializeField] private RuleTile secondaryForestTile;
     [SerializeField] private GameObject emptySpriteRenderer;
 
     [Header("References")]
@@ -22,6 +26,9 @@ public class TileBrushController : MonoBehaviour
     [SerializeField] private DesignController designController;
 
     private GridCellContent selectedCellContent;
+
+    private TileBase groundTileVariation1;
+    private TileBase groundTileVariation2;
 
     private enum BrushMode { Painting, Erasing, None }
     private BrushMode currentBrushMode = BrushMode.None;
@@ -34,6 +41,58 @@ public class TileBrushController : MonoBehaviour
         occupiedLocations.Clear();
         locationsOfNonTilemapPrefabs.Clear();
         selectedCellContent = GridCellContent.GroundTileVariation1;
+
+        switch (GameManager.Instance.GameData.gameTheme)
+        {
+            case GameTheme.SciFi:
+                groundTileVariation1 = mainFuturisticTile;
+                groundTileVariation2 = secondaryFuturisticTile;
+                break;
+            case GameTheme.Castle:
+                groundTileVariation1 = mainCastleTile;
+                groundTileVariation2 = secondaryCastleTile;
+                break;
+            case GameTheme.Forest:
+                groundTileVariation1 = mainForestTile;
+                groundTileVariation2 = secondaryForestTile;
+                break;
+        }
+    }
+
+    public void ResetLevelLayoutToLastState()
+    {
+        if (GameManager.Instance.GameData.levelLayout == null) 
+        {
+            SetCellContentToRandomHeight(GridCellContent.Player, (int)designController.gameArea.x - 1);
+            SetCellContentToRandomHeight(GridCellContent.Finish, (int)designController.gameArea.x + (int)designController.gameArea.width);
+        }
+        else
+        {
+            foreach (KeyValuePair<Vector3Int, GridCellContent> keyValuePair in GameManager.Instance.GameData.levelLayout)
+            {
+                occupiedLocations.Add(keyValuePair.Key, keyValuePair.Value);
+                SetTile(keyValuePair.Key, keyValuePair.Value);
+            }
+        }
+    }
+
+    private void SetCellContentToRandomHeight(GridCellContent content, int xLocation)
+    {
+        int height = Random.Range(
+            (int)designController.gameArea.y + 1,
+            (int)(designController.gameArea.y + designController.gameArea.height)
+        );
+
+        Vector3Int contentPosition = new(xLocation, height, 0);
+        occupiedLocations.Add(contentPosition, content);
+        SetTile(contentPosition, content);
+
+        for (int i = height - 1; i >= designController.gameArea.y; i--)
+        {
+            Vector3Int tilePosition = new(xLocation, i, 0);
+            occupiedLocations.Add(tilePosition, GridCellContent.GroundTileVariation1);
+            SetTile(tilePosition, GridCellContent.GroundTileVariation1);
+        }
     }
 
     public void ClearTilemap()
@@ -43,6 +102,8 @@ public class TileBrushController : MonoBehaviour
 
     private void Start()
     {
+        ResetLevelLayoutToLastState();
+
         GameManager.InputManager.controls.Default.Paint.started += SetBrushModePainting;
         GameManager.InputManager.controls.Default.Paint.canceled += SetBrushModeNone;
 
@@ -134,6 +195,7 @@ public class TileBrushController : MonoBehaviour
     {
         Vector3Int removePosition = grid.WorldToCell(transform.position);
         if (!occupiedLocations.ContainsKey(removePosition)) { return; }
+        if (!IsPositionInCanvas(removePosition)) { return; }
 
         UnsetTile(removePosition, occupiedLocations[removePosition]);
         occupiedLocations.Remove(removePosition);
